@@ -3,10 +3,9 @@
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Tool, Agent } from "@/lib/types";
-import { PlusCircle, Upload, Wand2, ImagePlus, Trash2, X } from "lucide-react";
+import { PlusCircle, Upload, Wand2, ImagePlus, Trash2 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
 import {
   Dialog,
   DialogContent,
@@ -30,7 +29,6 @@ export default function Home() {
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [imagePrompt, setImagePrompt] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const router = useRouter();
 
   useEffect(() => {
     const fetchTools = async () => {

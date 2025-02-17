@@ -1,13 +1,10 @@
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
 import {
   DocumentData,
   Firestore,
-  QueryDocumentSnapshot,
   WithFieldValue,
 } from "@google-cloud/firestore";
 import { COLLECTIONS } from "./constants";
-
+import { Tool } from "./types";
 
 export type FirestoreOperationResult = {
   success: boolean;
@@ -153,7 +150,7 @@ export const queryAgents = async <T>(options: {
   if (!options.withTools) {
     return snapshot.docs.map(doc => {
       const data = doc.data();
-      const { tools, ...rest } = data;
+      const { ...rest } = data;
       return rest as T;
     });
   }
@@ -174,16 +171,16 @@ export const queryTools = async <T>(options: {
 
   const snapshot = await query.get();
 
-  const tools: any[] = [];
+  const tools: Tool[] = [];
   
   snapshot.docs.forEach(doc => {
     const agent = doc.data();
     if (agent.tools) {
-      agent.tools.forEach((tool: any) => {
+      agent.tools.forEach((tool: Tool) => {
         const toolWithImage = { ...tool, image: agent.image };
         
         if (options.functionName) {
-          if (tool.name.toLowerCase().includes(options.functionName.toLowerCase())) {
+          if (tool.function.name.toLowerCase().includes(options.functionName.toLowerCase())) {
             tools.push(toolWithImage);
           }
         } else {

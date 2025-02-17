@@ -4,7 +4,6 @@ import { write, readAll } from "@/lib/firestore";
 import { COLLECTIONS } from "@/lib/constants";
 
 export async function GET(
-  request: NextRequest,
 ) {
   try {
     const agents = await readAll<Agent>(COLLECTIONS.AGENTS);
