@@ -1,14 +1,13 @@
 import { read } from "@/lib/firestore";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { COLLECTIONS } from "@/lib/constants";
 import { Agent } from "@/lib/types";
 
 export async function GET(
-  _request: NextRequest,
-  { params }: { params: { agentId: string } }
+  context: { params: { agentId: string } }
 ) {
   try {
-    const agent = await read<Agent>(COLLECTIONS.AGENTS, params.agentId);
+    const agent = await read<Agent>(COLLECTIONS.AGENTS, context.params.agentId);
     
     if (!agent) {
       return NextResponse.json(
@@ -25,4 +24,4 @@ export async function GET(
       { status: 500 }
     );
   }
-} 
+}
