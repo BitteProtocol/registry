@@ -4,6 +4,7 @@ import { COLLECTIONS } from "@/lib/constants";
 import { Agent } from "@/lib/types";
 
 export async function GET(
+  _request: Request,
   context: { params: { agentId: string } }
 ) {
   try {
