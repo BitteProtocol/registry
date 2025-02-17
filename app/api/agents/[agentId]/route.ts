@@ -1,14 +1,15 @@
 import { read } from "@/lib/firestore";
-import { NextResponse } from "next/server";
 import { COLLECTIONS } from "@/lib/constants";
 import { Agent } from "@/lib/types";
-
+import { NextResponse } from "next/server";
 export async function GET(
   _request: Request,
-  context: { params: { agentId: string } }
+  { params }: { params: Promise<{ agentId: string }> }
 ) {
+
   try {
-    const agent = await read<Agent>(COLLECTIONS.AGENTS, context.params.agentId);
+    const agentId = (await params).agentId;
+    const agent = await read<Agent>(COLLECTIONS.AGENTS, agentId);
     
     if (!agent) {
       return NextResponse.json(

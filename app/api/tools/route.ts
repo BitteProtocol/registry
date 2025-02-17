@@ -4,7 +4,7 @@ import { Tool } from "@/lib/types";
 import { kv } from "@vercel/kv";
 import { BittePrimitiveNames } from "@/lib/constants";
 
-export const getPingsByTool = async (
+const getPingsByTool = async (
   toolName: string
 ): Promise<number | null> => {
   return await kv.get<number>(`smart-action:v1.0:tool:${toolName}:pings`);

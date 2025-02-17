@@ -1,8 +1,8 @@
 import { experimental_generateImage as generateImage } from 'ai';
 import { openai } from '@ai-sdk/openai';
 
-export const ARWEAVE_URL = "https://arweave.net";
-export const MINTBASE_ARWEAVE_URL = "https://ar.mintbase.xyz";
+const ARWEAVE_URL = "https://arweave.net";
+const MINTBASE_ARWEAVE_URL = "https://ar.mintbase.xyz";
 
 
 export async function GET(request: Request) {

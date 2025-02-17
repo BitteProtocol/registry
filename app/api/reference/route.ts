@@ -5,7 +5,7 @@ const config = {
   spec: {
     content: openApiSpec,
   },
-  theme: 'default',
+  theme: 'default' as const,
 };
 
 export const GET = ApiReference(config); 
