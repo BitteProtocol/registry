@@ -19,11 +19,23 @@ export const openApiSpec: OpenAPIV3.Document = {
             schema: { type: 'boolean', default: true },
           },
           {
-            name: 'withTools',
+            name: 'chainIds',
             in: 'query',
-            description: 'Include tools in response',
-            schema: { type: 'boolean', default: false },
+            description: 'Filter agents by chain IDs (comma-separated)',
+            schema: { type: 'string' },
           },
+          {
+            name: 'limit',
+            in: 'query',
+            description: 'Maximum number of agents to return',
+            schema: { type: 'integer', default: 50 },
+          },
+          {
+            name: 'offset',
+            in: 'query',
+            description: 'Number of agents to skip',
+            schema: { type: 'integer', default: 0 },
+          }
         ],
         responses: {
           '200': {
@@ -123,6 +135,18 @@ export const openApiSpec: OpenAPIV3.Document = {
             description: 'Filter for verified tools only',
             schema: { type: 'boolean', default: true },
           },
+          {
+            name: 'offset',
+            in: 'query',
+            description: 'Number of tools to skip',
+            schema: { type: 'integer', default: 0 },
+          },
+          {
+            name: 'chainId',
+            in: 'query',
+            description: 'Filter tools by chain ID',
+            schema: { type: 'string' },
+          }
         ],
         responses: {
           '200': {
@@ -165,6 +189,15 @@ export const openApiSpec: OpenAPIV3.Document = {
           type: { type: 'string', enum: ['function'] },
           parameters: { type: 'object' },
           image: { type: 'string' },
+          isPrimitive: { type: 'boolean' },
+          pings: { type: 'integer' },
+          function: {
+            type: 'object',
+            properties: {
+              name: { type: 'string' }
+            },
+            required: ['name']
+          }
         },
         required: ['name', 'description', 'type'],
       },
@@ -184,8 +217,11 @@ export const openApiSpec: OpenAPIV3.Document = {
             },
           },
           verified: { type: 'boolean' },
+          pings: { type: 'integer' },
+          accountId: { type: 'string' },
+          repo: { type: 'string' }
         },
-        required: ['id', 'name', 'description', 'verified'],
+        required: ['id', 'name', 'description', 'verified', 'accountId', 'instructions', 'tools', 'image', 'repo', 'generatedDescription'],
       },
     },
   },
