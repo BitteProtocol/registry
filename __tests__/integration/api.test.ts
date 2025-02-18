@@ -1,5 +1,5 @@
 describe('API Integration Tests', () => {
-  const baseUrl = process.env.DEPLOYMENT_URL || 'http://localhost:3000';
+  const baseUrl = (process?.env?.DEPLOYMENT_URL ? 'https://' + process.env.DEPLOYMENT_URL : 'http://localhost:3000');
 
   describe('Agents API', () => {
     it('should successfully fetch agents', async () => {
