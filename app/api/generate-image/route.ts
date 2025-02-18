@@ -1,22 +1,21 @@
-import { experimental_generateImage as generateImage } from 'ai';
-import { openai } from '@ai-sdk/openai';
+import { experimental_generateImage as generateImage } from "ai";
+import { openai } from "@ai-sdk/openai";
 
 const ARWEAVE_URL = "https://arweave.net";
 const MINTBASE_ARWEAVE_URL = "https://ar.mintbase.xyz";
 
-
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const prompt = searchParams.get('prompt');
+    const prompt = searchParams.get("prompt");
 
     if (!prompt) {
-      return new Response('Missing prompt parameter', { status: 400 });
+      return new Response("Missing prompt parameter", { status: 400 });
     }
     const { image } = await generateImage({
-      model: openai.image('dall-e-3'), 
+      model: openai.image("dall-e-3"),
       prompt: prompt,
-      size: "1024x1024", 
+      size: "1024x1024",
     });
 
     const fileBuffer = Buffer.from(image.base64, "base64");
@@ -55,9 +54,8 @@ export async function GET(request: Request) {
       url,
       hash: arweaveHash,
     });
-
   } catch (error) {
-    console.error('Error generating image:', error);
-    return new Response('Error generating image', { status: 500 });
+    console.error("Error generating image:", error);
+    return new Response("Error generating image", { status: 500 });
   }
 }

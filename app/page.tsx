@@ -78,7 +78,7 @@ export default function Home() {
     setIsDragging(false);
 
     const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith('image/')) {
+    if (file && file.type.startsWith("image/")) {
       const reader = new FileReader();
       reader.onload = (e) => {
         setAgentImage(e.target?.result as string);
@@ -89,7 +89,7 @@ export default function Home() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file && file.type.startsWith('image/')) {
+    if (file && file.type.startsWith("image/")) {
       const reader = new FileReader();
       reader.onload = (e) => {
         setAgentImage(e.target?.result as string);
@@ -131,17 +131,19 @@ export default function Home() {
 
     setIsGeneratingImage(true);
     try {
-      console.log('Generating image with instructions:', imagePrompt);
-      const response = await fetch(`/api/generate-image?prompt=${encodeURIComponent(imagePrompt)}`);
+      console.log("Generating image with instructions:", imagePrompt);
+      const response = await fetch(
+        `/api/generate-image?prompt=${encodeURIComponent(imagePrompt)}`
+      );
       if (!response.ok) {
-        throw new Error('Failed to generate image');
+        throw new Error("Failed to generate image");
       }
       const data = await response.json();
-      console.log('Generated image data:', data);
+      console.log("Generated image data:", data);
       setAgentImage(data.url);
     } catch (error) {
       console.error("Failed to generate image:", error);
-      alert('Failed to generate image. Please try uploading one instead.');
+      alert("Failed to generate image. Please try uploading one instead.");
     } finally {
       setIsGeneratingImage(false);
     }
@@ -167,7 +169,8 @@ export default function Home() {
         description: "Custom agent created from tools",
         instructions: instructions,
         tools: selectedTools,
-        image: agentImage || selectedTools[0]?.image || "bitte-symbol-black.svg",
+        image:
+          agentImage || selectedTools[0]?.image || "bitte-symbol-black.svg",
         verified: false,
         repo: "custom-agent",
         generatedDescription: `Agent created with ${selectedTools.length} tools`,
@@ -253,8 +256,10 @@ export default function Home() {
                         {tool.function.description}
                       </p>
                       <div className="flex items-center gap-2 text-sm">
-                        <span className="text-zinc-500">{tool.isPrimitive ? "Primitive" : "Tool"}</span>
-                       </div>
+                        <span className="text-zinc-500">
+                          {tool.isPrimitive ? "Primitive" : "Tool"}
+                        </span>
+                      </div>
                     </div>
                   </button>
                 ))}
@@ -294,7 +299,9 @@ export default function Home() {
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
         <DialogContent className="bg-zinc-900 border-zinc-800 max-w-[700px] h-[400px]">
           <DialogHeader>
-            <DialogTitle className="text-xl font-medium text-white mb-2">Complete Agent Setup</DialogTitle>
+            <DialogTitle className="text-xl font-medium text-white mb-2">
+              Complete Agent Setup
+            </DialogTitle>
           </DialogHeader>
           <div className="flex gap-8 h-full">
             <div className="w-[300px] h-[300px]">
@@ -308,14 +315,16 @@ export default function Home() {
                     onDrop={handleDrop}
                     className={cn(
                       "flex h-full w-full cursor-pointer flex-col items-center justify-center gap-4 rounded-lg border-2 border-dashed border-zinc-700 bg-zinc-800/50 transition-colors hover:bg-zinc-800",
-                      isDragging && "border-blue-500/50 bg-blue-500/5",
+                      isDragging && "border-blue-500/50 bg-blue-500/5"
                     )}
                   >
                     <div className="rounded-full bg-zinc-900 p-3 shadow-sm">
                       <ImagePlus className="h-6 w-6 text-zinc-400" />
                     </div>
                     <div className="text-center">
-                      <p className="text-sm font-medium text-white">Click to select</p>
+                      <p className="text-sm font-medium text-white">
+                        Click to select
+                      </p>
                       <p className="text-xs text-zinc-400">
                         or drag and drop file here
                       </p>
@@ -358,7 +367,9 @@ export default function Home() {
 
             <div className="flex-1 space-y-6">
               <div className="space-y-2">
-                <label className="text-sm font-medium text-zinc-400">Agent Name</label>
+                <label className="text-sm font-medium text-zinc-400">
+                  Agent Name
+                </label>
                 <Input
                   className="bg-zinc-800 border-zinc-700 text-white"
                   placeholder="Enter agent name..."
@@ -369,7 +380,9 @@ export default function Home() {
 
               <div className="space-y-4">
                 <div className="space-y-2">
-                <label className="text-sm font-medium text-zinc-400">Agent Image</label>
+                  <label className="text-sm font-medium text-zinc-400">
+                    Agent Image
+                  </label>
                 </div>
 
                 <div className="flex gap-2">
@@ -385,7 +398,12 @@ export default function Home() {
                     disabled={isGeneratingImage}
                     className="text-zinc-300 hover:text-white text-sm flex items-center gap-2"
                   >
-                    <Wand2 className={cn("h-4 w-4", isGeneratingImage && "animate-spin")} />
+                    <Wand2
+                      className={cn(
+                        "h-4 w-4",
+                        isGeneratingImage && "animate-spin"
+                      )}
+                    />
                     {isGeneratingImage ? "Generating..." : "Generate"}
                   </Button>
                 </div>
@@ -400,7 +418,7 @@ export default function Home() {
                   Skip
                 </Button>
                 <div className="flex items-center gap-3">
-                  <Button 
+                  <Button
                     onClick={handleSubmitAgent}
                     className="bg-white hover:bg-white/90 text-black text-sm px-4"
                   >

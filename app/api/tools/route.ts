@@ -4,33 +4,31 @@ import { Tool } from "@/lib/types";
 import { kv } from "@vercel/kv";
 import { BittePrimitiveNames } from "@/lib/constants";
 
-const getPingsByTool = async (
-  toolName: string
-): Promise<number | null> => {
+const getPingsByTool = async (toolName: string): Promise<number | null> => {
   return await kv.get<number>(`smart-action:v1.0:tool:${toolName}:pings`);
 };
 
-export async function GET(
-  request: NextRequest,
-) {
+export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
-  const functionName = searchParams.get('function');
-  const verifiedOnly = searchParams.get('verifiedOnly') !== 'false';
-  const offset = parseInt(searchParams.get('offset') || '0');
-  const chainId = searchParams.get('chainId');
+  const functionName = searchParams.get("function");
+  const verifiedOnly = searchParams.get("verifiedOnly") !== "false";
+  const offset = parseInt(searchParams.get("offset") || "0");
+  const chainId = searchParams.get("chainId");
 
   try {
     const tools = await queryTools<Tool>({
       verified: verifiedOnly,
       functionName: functionName || undefined,
       offset,
-      chainId: chainId || undefined
+      chainId: chainId || undefined,
     });
 
-    const toolsWithPrimitiveFlags = tools.map(tool => ({
+    const toolsWithPrimitiveFlags = tools.map((tool) => ({
       ...tool,
       isPrimitive: BittePrimitiveNames.includes(tool.function.name),
-      image: BittePrimitiveNames.includes(tool.function.name) ? `/bitte-symbol-black.svg` : tool.image
+      image: BittePrimitiveNames.includes(tool.function.name)
+        ? `/bitte-symbol-black.svg`
+        : tool.image,
     }));
 
     const toolsWithPings = await Promise.all(
@@ -38,7 +36,7 @@ export async function GET(
         const pings = await getPingsByTool(tool.function.name);
         return {
           ...tool,
-          pings: pings || 0
+          pings: pings || 0,
         };
       })
     );
@@ -47,9 +45,9 @@ export async function GET(
 
     return NextResponse.json(sortedTools);
   } catch (error) {
-    console.error('Error fetching tools:', error);
+    console.error("Error fetching tools:", error);
     return NextResponse.json(
-      { error: 'Failed to fetch tools' },
+      { error: "Failed to fetch tools" },
       { status: 500 }
     );
   }
