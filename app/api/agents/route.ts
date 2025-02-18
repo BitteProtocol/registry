@@ -14,7 +14,7 @@ export async function GET(
     const offset = parseInt(searchParams.get('offset') || '0');
     const verifiedOnly = searchParams.get('verifiedOnly') !== 'false';
 
-    let agents = await queryAgents<Agent>({
+    const agents = await queryAgents<Agent>({
       verified: verifiedOnly,
       chainIds,
       offset,

@@ -168,7 +168,7 @@ export const queryAgents = async <T>(options: {
   
   if (!options.withTools) {
     return agents.map(agent => {
-      const { tools, ...rest } = agent;
+      const { ...rest } = agent;
       return rest as T;
     });
   }
