@@ -138,6 +138,9 @@ export const catchDocumentNotFound = (err: Error): null => {
 export const queryAgents = async <T>(options: {
   verified?: boolean;
   withTools?: boolean;
+  chainIds?: string[];
+  offset?: number;
+  limit?: number;
 } = {}): Promise<T[]> => {
   let query: FirebaseFirestore.Query = db.collection(COLLECTIONS.AGENTS);
   
@@ -147,23 +150,40 @@ export const queryAgents = async <T>(options: {
 
   const snapshot = await query.get();
   
+  let agents = snapshot.docs.map(doc => doc.data());
+
+  // Filter by chainIds if specified
+  if (options.chainIds?.length) {
+    agents = agents.filter(agent => 
+      agent.chainIds?.some((id: number) => options.chainIds!.includes(id.toString()))
+    );
+  }
+
+  // Apply pagination
+  if (options.offset || options.limit) {
+    const start = options.offset || 0;
+    const end = options.limit ? start + options.limit : undefined;
+    agents = agents.slice(start, end);
+  }
+  
   if (!options.withTools) {
-    return snapshot.docs.map(doc => {
-      const data = doc.data();
-      const { ...rest } = data;
+    return agents.map(agent => {
+      const { tools, ...rest } = agent;
       return rest as T;
     });
   }
   
-  return snapshot.docs.map(doc => doc.data() as T);
+  return agents as T[];
 };
 
 export const queryTools = async <T>(options: {
   verified?: boolean;
   functionName?: string;
+  offset?: number;
+  chainId?: string;
 } = {}): Promise<T[]> => {
   let query: FirebaseFirestore.Query = db.collection(COLLECTIONS.AGENTS)
-    .select('tools', 'image'); 
+    .select('tools', 'image', 'chainIds');
   
   if (options.verified) {
     query = query.where('verified', '==', true);
@@ -177,14 +197,22 @@ export const queryTools = async <T>(options: {
     const agent = doc.data();
     if (agent.tools) {
       agent.tools.forEach((tool: Tool) => {
-        const toolWithImage = { ...tool, image: agent.image };
+        const toolWithImageAndChainIds = { 
+          ...tool, 
+          image: agent.image,
+          chainIds: agent.chainIds || [] 
+        };
+        
+        if (options.chainId && (!agent.chainIds || !agent.chainIds.includes(options.chainId))) {
+          return;
+        }
         
         if (options.functionName) {
           if (tool.function.name.toLowerCase().includes(options.functionName.toLowerCase())) {
-            tools.push(toolWithImage);
+            tools.push(toolWithImageAndChainIds);
           }
         } else {
-          tools.push(toolWithImage);
+          tools.push(toolWithImageAndChainIds);
         }
       });
     }
@@ -193,6 +221,10 @@ export const queryTools = async <T>(options: {
   const uniqueTools = tools.filter((tool, index, self) =>
     index === self.findIndex(t => t.function.name === tool.function.name)
   );
+  
+  if (options.offset) {
+    return uniqueTools.slice(options.offset) as T[];
+  }
   
   return uniqueTools as T[];
 };

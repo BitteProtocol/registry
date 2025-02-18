@@ -16,11 +16,15 @@ export async function GET(
   const { searchParams } = new URL(request.url);
   const functionName = searchParams.get('function');
   const verifiedOnly = searchParams.get('verifiedOnly') !== 'false';
+  const offset = parseInt(searchParams.get('offset') || '0');
+  const chainId = searchParams.get('chainId');
 
   try {
     const tools = await queryTools<Tool>({
       verified: verifiedOnly,
-      functionName: functionName || undefined
+      functionName: functionName || undefined,
+      offset,
+      chainId: chainId || undefined
     });
 
     const toolsWithPrimitiveFlags = tools.map(tool => ({

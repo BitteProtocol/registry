@@ -23,6 +23,7 @@ export type Agent = {
   instructions: string;
   tools: Tool[];
   image: string;
+  chainIds: number[];
   verified: boolean;
   repo: string;
   generatedDescription: string;

@@ -1,13 +1,39 @@
 import { Agent } from "@/lib/types";
 import { NextRequest, NextResponse } from "next/server";
-import { write, readAll } from "@/lib/firestore";
+import { write, queryAgents } from "@/lib/firestore";
 import { COLLECTIONS } from "@/lib/constants";
+import { kv } from "@vercel/kv";
 
 export async function GET(
+  request: NextRequest,
 ) {
   try {
-    const agents = await readAll<Agent>(COLLECTIONS.AGENTS);
-    return NextResponse.json(agents);
+    const { searchParams } = new URL(request.url);
+    const chainIds = searchParams.get('chainIds')?.split(',');
+    const limit = parseInt(searchParams.get('limit') || '50');
+    const offset = parseInt(searchParams.get('offset') || '0');
+    const verifiedOnly = searchParams.get('verifiedOnly') !== 'false';
+
+    let agents = await queryAgents<Agent>({
+      verified: verifiedOnly,
+      chainIds,
+      offset,
+      limit
+    });
+
+    const agentIds = agents.map(agent => agent.id);
+    const pingsByAgent = await getTotalPingsByAgentIds(agentIds);
+
+    const agentsWithPings = agents.map(agent => ({
+      ...agent,
+      pings: pingsByAgent[agent.id] || 0
+    }));
+
+    const sortedAgents = agentsWithPings.sort((a, b) => 
+      (b.pings as number) - (a.pings as number)
+    );
+
+    return NextResponse.json(sortedAgents);
   } catch (error) {
     console.error('Error fetching agents:', error);
     return NextResponse.json(
@@ -55,3 +81,22 @@ export async function POST(
     );
   }
 }
+
+const getTotalPingsByAgentIds = async (
+  agentIds: string[]
+): Promise<Record<string, number | null>> => {
+  const pipeline = kv.pipeline();
+  agentIds.forEach((id) => {
+    pipeline.get<number>(`smart-action:v1.0:agent:${id}:pings`);
+  });
+
+  const values = await pipeline.exec<number[]>();
+
+  return agentIds.reduce(
+    (acc, id, index) => {
+      acc[id] = values[index];
+      return acc;
+    },
+    {} as Record<string, number | null>
+  );
+};
