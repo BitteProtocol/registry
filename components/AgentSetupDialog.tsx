@@ -5,7 +5,7 @@ import { ImagePlus, Upload, Trash2, Wand2 } from "lucide-react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useState, useRef, useEffect } from "react";
-import { Tool, Agent } from "@/lib/types";
+import { Tool } from "@/lib/types";
 
 interface AgentSetupDialogProps {
   isOpen: boolean;
