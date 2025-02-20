@@ -109,14 +109,14 @@ export default function Home() {
     <div className="h-screen bg-black text-white flex flex-col">
       <CommandMenu groups={groups} />
       <div className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
-        <div className="max-w-7xl mx-auto p-6">
-          <div className="flex justify-between items-center mb-4 sticky top-0 bg-black/80 backdrop-blur-sm z-10 py-2">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 sticky top-0 bg-black/80 backdrop-blur-sm z-10 py-2 gap-y-2">
             <div className="space-y-1">
-              <h1 className="text-2xl font-medium tracking-tight">
+              <h1 className="text-xl sm:text-2xl font-medium tracking-tight">
                 Available tools
               </h1>
             </div>
-            <p className="text-zinc-400">
+            <p className="text-sm sm:text-base text-zinc-400 hidden sm:block">
               Press{" "}
               <kbd className="rounded-md border border-zinc-800 bg-zinc-900 px-2 py-0.5">
                 ⌘

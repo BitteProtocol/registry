@@ -155,14 +155,14 @@ export function AgentSetupDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-zinc-900 border-zinc-800 max-w-[700px] h-[400px]">
+      <DialogContent className="bg-zinc-900 border-zinc-800 max-w-[700px] h-[90vh] sm:h-[450px]">
         <DialogHeader>
           <DialogTitle className="text-xl font-medium text-white mb-2">
             Complete Agent Setup
           </DialogTitle>
         </DialogHeader>
-        <div className="flex gap-8 h-full">
-          <div className="w-[300px] h-[300px]">
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-8 h-full overflow-y-auto">
+          <div className="w-full sm:w-[300px] h-[200px] sm:h-[300px]">
             {!image ? (
               <div
                 onClick={() => fileInputRef.current?.click()}
@@ -176,7 +176,7 @@ export function AgentSetupDialog({
                 )}
               >
                 <div className="rounded-full bg-zinc-900 p-3 shadow-sm">
-                  <ImagePlus className="h-6 w-6 text-zinc-400" />
+                  <ImagePlus className="h-5 w-5 sm:h-6 sm:w-6 text-zinc-400" />
                 </div>
                 <div className="text-center">
                   <p className="text-sm font-medium text-white">
@@ -186,6 +186,13 @@ export function AgentSetupDialog({
                     or drag and drop file here
                   </p>
                 </div>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
               </div>
             ) : (
               <div className="h-full">
@@ -195,7 +202,7 @@ export function AgentSetupDialog({
                     alt="Preview"
                     fill
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
-                    sizes="300px"
+                    sizes="(max-width: 640px) 100vw, 300px"
                   />
                   <div className="absolute inset-0 bg-black/40 opacity-0 transition-opacity group-hover:opacity-100" />
                   <div className="absolute inset-0 flex items-center justify-center gap-2 opacity-0 transition-opacity group-hover:opacity-100">
@@ -203,9 +210,9 @@ export function AgentSetupDialog({
                       size="sm"
                       variant="secondary"
                       onClick={() => fileInputRef.current?.click()}
-                      className="h-9 w-9 p-0"
+                      className="h-8 w-8 sm:h-9 sm:w-9 p-0"
                     >
-                      <Upload className="h-4 w-4" />
+                      <Upload className="h-3 w-3 sm:h-4 sm:w-4" />
                     </Button>
                     <Button
                       size="sm"
@@ -216,9 +223,9 @@ export function AgentSetupDialog({
                           fileInputRef.current.value = "";
                         }
                       }}
-                      className="h-9 w-9 p-0"
+                      className="h-8 w-8 sm:h-9 sm:w-9 p-0"
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
                     </Button>
                   </div>
                 </div>
@@ -226,76 +233,61 @@ export function AgentSetupDialog({
             )}
           </div>
 
-          <div className="flex-1 space-y-6">
+          <div className="flex-1 space-y-4 sm:space-y-6">
             <div className="space-y-2">
               <label className="text-sm font-medium text-zinc-400">
                 Agent Name
               </label>
               <Input
-                className="bg-zinc-800 border-zinc-700 text-white"
+                className="bg-zinc-900 border-zinc-800 text-white focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-zinc-700"
                 placeholder="Enter agent name..."
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium text-zinc-400">
                   Agent Image
                 </label>
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <Input
-                  className="bg-zinc-800 border-zinc-700 text-white flex-1"
-                  placeholder="Enter image prompt..."
+                  className="bg-zinc-900 border-zinc-800 text-white focus-visible:ring-0 focus-visible:ring-offset-0 focus-visible:border-zinc-700"
+                  placeholder="Describe the agent's appearance..."
                   value={imagePrompt}
                   onChange={(e) => setImagePrompt(e.target.value)}
                 />
                 <Button
-                  variant="ghost"
+                  variant="secondary"
                   onClick={handleGenerateImage}
                   disabled={isGeneratingImage}
-                  className="text-zinc-300 text-sm flex items-center gap-2"
+                  className="w-full sm:w-auto whitespace-nowrap"
                 >
-                  <Wand2
-                    className={cn(
-                      "h-4 w-4",
-                      isGeneratingImage && "animate-spin"
-                    )}
-                  />
+                  <Wand2 className="h-4 w-4 mr-2" />
                   {isGeneratingImage ? "Generating..." : "Generate"}
                 </Button>
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-4 mt-auto border-t border-zinc-800">
+            <div className="flex flex-col sm:flex-row gap-2 pt-4">
               <Button
-                variant="ghost"
+                variant="secondary"
                 onClick={handleSkip}
-                className="text-zinc-500 text-sm"
+                className="w-full sm:w-auto order-2 sm:order-1"
               >
                 Skip
               </Button>
-              <div className="flex items-center gap-3">
-                <Button
-                  onClick={handleSubmit}
-                  className="bg-white text-black text-sm px-4 hover:bg-white"
-                >
-                  Create Agent
-                </Button>
-              </div>
+              <Button
+                onClick={handleSubmit}
+                className="w-full sm:w-auto order-1 sm:order-2"
+              >
+                Create Agent
+              </Button>
             </div>
           </div>
-
-          <Input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            ref={fileInputRef}
-            onChange={handleFileChange}
-          />
         </div>
       </DialogContent>
     </Dialog>
