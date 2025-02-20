@@ -25,6 +25,12 @@ export const openApiSpec: OpenAPIV3.Document = {
             schema: { type: 'string' },
           },
           {
+            name: 'category',
+            in: 'query',
+            description: 'Filter agents by category',
+            schema: { type: 'string' },
+          },
+          {
             name: 'limit',
             in: 'query',
             description: 'Maximum number of agents to return',
@@ -210,6 +216,7 @@ export const openApiSpec: OpenAPIV3.Document = {
           generatedDescription: { type: 'string' },
           image: { type: 'string' },
           instructions: { type: 'string' },
+          category: { type: 'string' },
           tools: {
             type: 'array',
             items: {
@@ -221,7 +228,7 @@ export const openApiSpec: OpenAPIV3.Document = {
           accountId: { type: 'string' },
           repo: { type: 'string' }
         },
-        required: ['id', 'name', 'description', 'verified', 'accountId', 'instructions', 'tools', 'image', 'repo', 'generatedDescription'],
+        required: ['id', 'name', 'description', 'verified', 'accountId', 'instructions', 'tools', 'image', 'repo', 'generatedDescription', 'category'],
       },
     },
   },

@@ -11,12 +11,14 @@ export async function GET(request: NextRequest) {
     const limit = parseInt(searchParams.get("limit") || "50");
     const offset = parseInt(searchParams.get("offset") || "0");
     const verifiedOnly = searchParams.get("verifiedOnly") !== "false";
+    const category = searchParams.get("category") || undefined;
 
     const agents = await queryAgents<Agent>({
       verified: verifiedOnly,
       chainIds,
       offset,
       limit,
+      category: category === "" ? undefined : category,
     });
 
     const agentIds = agents.map((agent) => agent.id);
@@ -60,6 +62,7 @@ export async function POST(request: NextRequest) {
       "image",
       "repo",
       "generatedDescription",
+      "category",
     ];
     const missingFields = requiredFields.filter(
       (field) => !(field in newAgent)

@@ -141,6 +141,7 @@ export const queryAgents = async <T>(options: {
   chainIds?: string[];
   offset?: number;
   limit?: number;
+  category?: string | null;
 } = {}): Promise<T[]> => {
   let query: FirebaseFirestore.Query = db.collection(COLLECTIONS.AGENTS);
   
@@ -148,23 +149,24 @@ export const queryAgents = async <T>(options: {
     query = query.where('verified', '==', true);
   }
 
-  const snapshot = await query.get();
-  
-  let agents = snapshot.docs.map(doc => doc.data());
-
-  // Filter by chainIds if specified
   if (options.chainIds?.length) {
-    agents = agents.filter(agent => 
-      agent.chainIds?.some((id: number) => options.chainIds!.includes(id.toString()))
-    );
+    query = query.where('chainIds', 'array-contains-any', options.chainIds.map(id => parseInt(id)));
   }
 
-  // Apply pagination
-  if (options.offset || options.limit) {
-    const start = options.offset || 0;
-    const end = options.limit ? start + options.limit : undefined;
-    agents = agents.slice(start, end);
+  if (options.category) {
+    query = query.where('category', '==', options.category);
   }
+
+  if (options.limit) {
+    query = query.limit(options.limit);
+  }
+
+  if (options.offset) {
+    query = query.offset(options.offset);
+  }
+
+  const snapshot = await query.get();
+  const agents = snapshot.docs.map(doc => doc.data());
   
   if (!options.withTools) {
     return agents.map(agent => {
@@ -189,42 +191,45 @@ export const queryTools = async <T>(options: {
     query = query.where('verified', '==', true);
   }
 
-  const snapshot = await query.get();
+  if (options.chainId) {
+    query = query.where('chainIds', 'array-contains', options.chainId);
+  }
 
+  const limit = 100;
+  query = query.limit(limit);
+
+  const snapshot = await query.get();
   const tools: Tool[] = [];
   
-  snapshot.docs.forEach(doc => {
+  for (const doc of snapshot.docs) {
     const agent = doc.data();
-    if (agent.tools) {
-      agent.tools.forEach((tool: Tool) => {
-        const toolWithImageAndChainIds = { 
-          ...tool, 
-          image: agent.image,
-          chainIds: agent.chainIds || [] 
-        };
-        
-        if (options.chainId && (!agent.chainIds || !agent.chainIds.includes(options.chainId))) {
-          return;
-        }
-        
-        if (options.functionName) {
-          if (tool.function.name.toLowerCase().includes(options.functionName.toLowerCase())) {
-            tools.push(toolWithImageAndChainIds);
-          }
-        } else {
-          tools.push(toolWithImageAndChainIds);
-        }
+    if (!agent.tools?.length) continue;
+
+    const baseToolData = {
+      image: agent.image,
+      chainIds: agent.chainIds || []
+    };
+
+    for (const tool of agent.tools) {
+      if (options.functionName && 
+          !tool.function.name.toLowerCase().includes(options.functionName.toLowerCase())) {
+        continue;
+      }
+
+      tools.push({
+        ...tool,
+        ...baseToolData
       });
     }
-  });
+  }
 
-  const uniqueTools = tools.filter((tool, index, self) =>
-    index === self.findIndex(t => t.function.name === tool.function.name)
+  const uniqueTools = Array.from(
+    new Map(tools.map(tool => [tool.function.name, tool])).values()
   );
-  
+
   if (options.offset) {
     return uniqueTools.slice(options.offset) as T[];
   }
-  
+
   return uniqueTools as T[];
 };

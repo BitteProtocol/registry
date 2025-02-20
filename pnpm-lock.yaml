@@ -14,6 +14,9 @@ importers:
       '@google-cloud/firestore':
         specifier: ^7.11.0
         version: 7.11.0
+      '@jest/globals':
+        specifier: ^29.7.0
+        version: 29.7.0
       '@radix-ui/react-dialog':
         specifier: ^1.1.6
         version: 1.1.6(@types/react-dom@19.0.3(@types/react@19.0.8))(@types/react@19.0.8)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -78,6 +81,9 @@ importers:
       '@types/node':
         specifier: ^20
         version: 20.17.17
+      '@types/node-fetch':
+        specifier: ^2.6.12
+        version: 2.6.12
       '@types/react':
         specifier: ^19
         version: 19.0.8
@@ -99,6 +105,9 @@ importers:
       jest-environment-node:
         specifier: ^29.7.0
         version: 29.7.0
+      node-fetch:
+        specifier: '2'
+        version: 2.7.0
       postcss:
         specifier: ^8
         version: 8.5.2
@@ -1129,6 +1138,9 @@ packages:
   '@types/long@4.0.2':
     resolution: {integrity: sha512-MqTGEo5bj5t157U6fA/BiDynNkn0YknVdh48CMPkTSpFTVmvao5UQmm7uEF6xBEo7qIMAlY/JSleYaE6VOdpaA==}
 
+  '@types/node-fetch@2.6.12':
+    resolution: {integrity: sha512-8nneRWKCg3rMtF69nLQJnOYUcbafYeFSjqkw3jCRLsqkWFlHaoQrr5mXmofFGOx3DKn7UfmBMyov8ySvLRVldA==}
+
   '@types/node@20.17.17':
     resolution: {integrity: sha512-/WndGO4kIfMicEQLTi/mDANUu/iVUhT7KboZPdEqqHQ4aTS+3qT3U5gIqWDFV+XouorjfgGqvKILJeHhuQgFYg==}
 
@@ -1945,6 +1957,10 @@ packages:
   form-data@2.5.2:
     resolution: {integrity: sha512-GgwY0PS7DbXqajuGf4OYlsrIu3zgxD6Vvql43IBhm6MahqA5SK/7mwhtNj2AdH2z35YR34ujJ7BN+3fFC3jP5Q==}
     engines: {node: '>= 0.12'}
+
+  form-data@4.0.2:
+    resolution: {integrity: sha512-hGfm/slu0ZabnNt4oaRZ6uREyfCj6P4fT/n6A1rGV+Z0VdGXjfOhVUpkn6qVQONHGIFwmveGXyDs75+nr6FM8w==}
+    engines: {node: '>= 6'}
 
   framer-motion@12.4.2:
     resolution: {integrity: sha512-pW307cQKjDqEuO1flEoIFf6TkuJRfKr+c7qsHAJhDo4368N/5U8/7WU8J+xhd9+gjmOgJfgp+46evxRRFM39dA==}
@@ -4570,6 +4586,11 @@ snapshots:
 
   '@types/long@4.0.2': {}
 
+  '@types/node-fetch@2.6.12':
+    dependencies:
+      '@types/node': 20.17.17
+      form-data: 4.0.2
+
   '@types/node@20.17.17':
     dependencies:
       undici-types: 6.19.8
@@ -5610,6 +5631,13 @@ snapshots:
       combined-stream: 1.0.8
       mime-types: 2.1.35
       safe-buffer: 5.2.1
+
+  form-data@4.0.2:
+    dependencies:
+      asynckit: 0.4.0
+      combined-stream: 1.0.8
+      es-set-tostringtag: 2.1.0
+      mime-types: 2.1.35
 
   framer-motion@12.4.2(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:

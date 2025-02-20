@@ -2,7 +2,7 @@
 
 import { Tool } from "@/lib/types";
 import { Plus } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import {
   CommandMenu,
   type CommandMenuGroup,
