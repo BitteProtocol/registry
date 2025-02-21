@@ -1,7 +1,7 @@
 import fetch from 'node-fetch';
 
 export const BASE_URL = process.env.DEPLOYMENT_URL 
-  ? `https://${process.env.DEPLOYMENT_URL}`
+  ? process.env.DEPLOYMENT_URL
   : 'http://localhost:3000';
 
 describe('Agents API Integration Tests', () => {
