@@ -6,6 +6,7 @@ import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { useState, useRef, useEffect } from "react";
 import { Tool } from "@/lib/types";
+import { useToast } from "@/hooks/use-toast";
 
 interface AgentSetupDialogProps {
   isOpen: boolean;
@@ -26,6 +27,7 @@ export function AgentSetupDialog({
   onError,
   setIsCreatingAgent,
 }: AgentSetupDialogProps) {
+  const { toast } = useToast();
   const [name, setName] = useState("");
   const [image, setImage] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -86,7 +88,20 @@ export function AgentSetupDialog({
 
   const handleGenerateImage = async () => {
     if (!imagePrompt.trim()) {
-      alert("Please provide an image prompt");
+      toast({
+        title: "Error",
+        description: "Please provide an image prompt",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (imagePrompt.length < 10) {
+      toast({
+        title: "Error",
+        description: "Prompt must be at least 10 characters",
+        variant: "destructive",
+      });
       return;
     }
 
@@ -100,7 +115,11 @@ export function AgentSetupDialog({
       setImage(data.url);
     } catch (error) {
       console.error("Failed to generate image:", error);
-      alert("Failed to generate image. Please try uploading one instead.");
+      toast({
+        title: "Error",
+        description: "Failed to generate image. Please try uploading one instead.",
+        variant: "destructive",
+      });
     } finally {
       setIsGeneratingImage(false);
     }
@@ -142,7 +161,11 @@ export function AgentSetupDialog({
 
   const handleSubmit = async () => {
     if (!name.trim()) {
-      alert("Please provide a name for your agent");
+      toast({
+        title: "Error",
+        description: "Please provide a name for your agent",
+        variant: "destructive",
+      });
       return;
     }
     await createAgent(name.trim());
@@ -274,7 +297,6 @@ export function AgentSetupDialog({
 
             <div className="flex flex-col sm:flex-row gap-2 pt-4">
               <Button
-                variant="secondary"
                 onClick={handleSkip}
                 className="w-full sm:w-auto order-2 sm:order-1"
               >
@@ -282,6 +304,7 @@ export function AgentSetupDialog({
               </Button>
               <Button
                 onClick={handleSubmit}
+                variant="secondary"
                 className="w-full sm:w-auto order-1 sm:order-2"
               >
                 Create Agent

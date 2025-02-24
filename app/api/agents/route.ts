@@ -60,9 +60,7 @@ export async function POST(request: NextRequest) {
       "instructions",
       "tools",
       "image",
-      "repo",
       "generatedDescription",
-      "category",
     ];
     const missingFields = requiredFields.filter(
       (field) => !(field in newAgent)

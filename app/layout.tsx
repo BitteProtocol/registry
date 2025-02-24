@@ -1,14 +1,9 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import type React from "react";
+import { Toaster } from "sonner";
+import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
-
-export const metadata: Metadata = {
-  title: "AI Agent Dashboard",
-  description: "Create and manage AI agents with various tools",
-};
 
 export default function RootLayout({
   children,
@@ -17,7 +12,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={inter.className}>
-      <body className="bg-black text-white min-h-screen">{children}</body>
+      <body className="bg-black text-white min-h-screen">
+        {children}
+        <Toaster />
+      </body>
     </html>
   );
 }

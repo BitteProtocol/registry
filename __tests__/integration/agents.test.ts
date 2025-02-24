@@ -5,6 +5,11 @@ export const BASE_URL = process.env.DEPLOYMENT_URL
   : 'http://localhost:3000';
 
 describe('Agents API Integration Tests', () => {
+
+  beforeEach(async () => {
+    await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second delay
+  });
+
   it('should fetch agents successfully', async () => {
     const response = await fetch(`${BASE_URL}/api/agents`);
     const data = await response.json();

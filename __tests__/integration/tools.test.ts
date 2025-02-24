@@ -1,6 +1,9 @@
 import fetch from 'node-fetch';
 import { BASE_URL } from './agents.test';
 
+beforeEach(async () => {
+  await new Promise(resolve => setTimeout(resolve, 1000)); 
+});
 
 describe('Tools API Integration Tests', () => {
   it('should fetch tools successfully', async () => {

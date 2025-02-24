@@ -90,7 +90,7 @@ export default function Home() {
   };
 
   const handleAgentCreated = (agentId: string) => {
-    window.location.href = `https://www.bitte.ai/registry/${agentId}`;
+    window.location.href = `https://www.bitte.ai/agents/${agentId}`;
   };
 
   const handleAgentError = (error: Error) => {
