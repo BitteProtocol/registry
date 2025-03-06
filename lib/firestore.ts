@@ -3,7 +3,7 @@ import {
   Firestore,
   WithFieldValue,
 } from "@google-cloud/firestore";
-import { COLLECTIONS } from "./constants";
+import { COLLECTIONS, BittePrimitiveNames } from "./constants";
 import { Tool } from "./types";
 
 export type FirestoreOperationResult = {
@@ -224,7 +224,19 @@ export const queryTools = async <T>(options: {
   }
 
   const uniqueTools = Array.from(
-    new Map(tools.map(tool => [tool.function.name, tool])).values()
+    new Map(
+      tools
+        .filter(tool => BittePrimitiveNames.includes(tool.function.name))
+        .map(tool => [tool.function.name, tool])
+    ).values()
+  ).concat(
+    Array.from(
+      new Map(
+        tools
+          .filter(tool => !BittePrimitiveNames.includes(tool.function.name))
+          .map(tool => [`${tool.execution.baseUrl}${tool.execution.path}`, tool])
+      ).values()
+    )
   );
 
   if (options.offset) {

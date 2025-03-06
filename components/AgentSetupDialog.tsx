@@ -135,13 +135,13 @@ export function AgentSetupDialog({
         },
         body: JSON.stringify({
           name: agentName,
-          accountId: "default-account",
+          accountId: "",
           description: "Custom agent created from tools",
           instructions,
           tools: selectedTools,
-          image: image || selectedTools[0]?.image || "bitte-symbol-black.svg",
+          image: image || selectedTools[0]?.image,
           verified: false,
-          repo: "custom-agent",
+          repo: "",
           generatedDescription: `Agent created with ${selectedTools.length} tools`,
         }),
       });
