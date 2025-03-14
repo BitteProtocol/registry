@@ -70,3 +70,72 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Markdown Editor Styles */
+.w-md-editor {
+  background-color: #18181b !important;
+}
+
+.w-md-editor-text-pre,
+.w-md-editor-text-input,
+.w-md-editor-text {
+  color: #ffffff !important;
+}
+
+.wmde-markdown-color {
+  background-color: #18181b !important;
+  color: #ffffff !important;
+}
+
+.w-md-editor-toolbar {
+  background-color: #27272a !important;
+  border-color: #3f3f46 !important;
+}
+
+.w-md-editor-toolbar button {
+  color: #a1a1aa !important;
+}
+
+.w-md-editor-toolbar button:hover {
+  color: #ffffff !important;
+}
+
+.w-md-editor-preview {
+  background-color: #18181b !important;
+  box-shadow: inset 1px 0 0 0 #3f3f46 !important;
+}
+
+.wmde-markdown {
+  background-color: transparent !important;
+}
+
+.w-md-editor,
+.w-md-editor-text-pre > code,
+.w-md-editor-text-pre > code:focus {
+  color: #ffffff !important;
+}
+
+.w-md-editor-toolbar-divider {
+  background-color: #3f3f46 !important;
+}
+
+/* Syntax highlighting */
+.w-md-editor-text-pre > code .token.keyword {
+  color: #c678dd !important;
+}
+
+.w-md-editor-text-pre > code .token.string {
+  color: #98c379 !important;
+}
+
+.w-md-editor-text-pre > code .token.function {
+  color: #61afef !important;
+}
+
+.w-md-editor-text-pre > code .token.comment {
+  color: #5c6370 !important;
+}
+
+.w-md-editor-text-pre > code .token.operator {
+  color: #56b6c2 !important;
+}

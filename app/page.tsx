@@ -145,6 +145,7 @@ export default function Home() {
         setInstructions={setInstructions}
         handleCreateAgent={handleCreateAgent}
         isCreating={isDialogOpen}
+        selectedTools={Array.from(selectedItems).map((index) => tools[index])}
       />
 
       <AgentSetupDialog
