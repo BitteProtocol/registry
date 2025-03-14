@@ -1,8 +1,7 @@
-import { Agent } from "@/lib/types";
 import { NextRequest, NextResponse } from "next/server";
-import { write, queryAgents } from "@/lib/firestore";
-import { COLLECTIONS } from "@/lib/constants";
+import { queryAgents } from "@/lib/firestore";
 import { kv } from "@vercel/kv";
+import { listAiAgents, createAiAgent, ai_agent } from "@bitte-ai/data";
 
 export async function GET(request: NextRequest) {
   try {
@@ -13,13 +12,16 @@ export async function GET(request: NextRequest) {
     const verifiedOnly = searchParams.get("verifiedOnly") !== "false";
     const category = searchParams.get("category") || undefined;
 
-    const agents = await queryAgents<Agent>({
+    // TODO: remove firestore after migration
+    const firestoreAgents = await queryAgents({
       verified: verifiedOnly,
       chainIds,
       offset,
       limit,
       category: category === "" ? undefined : category,
     });
+    const sqlAgents = await listAiAgents();
+    const agents = [...firestoreAgents, ...sqlAgents];
 
     const agentIds = agents.map((agent) => agent.id);
     const pingsByAgent = await getTotalPingsByAgentIds(agentIds);
@@ -47,7 +49,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const newAgent: Agent = {
+    const newAgent: ai_agent = {
       ...body,
       verified: false,
       id: crypto.randomUUID(),
@@ -73,11 +75,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const result = await write(COLLECTIONS.AGENTS, newAgent.id, newAgent);
-
-    if (!result.success) {
-      throw result.error;
-    }
+    await createAiAgent(newAgent);
 
     return NextResponse.json(newAgent, { status: 201 });
   } catch (error) {
