@@ -20,6 +20,7 @@ export async function GET(request: NextRequest) {
       limit,
       category: category === "" ? undefined : category,
     });
+    // FIXME: wait for version that is camel case
     const sqlAgents = await listAiAgents();
     const agents = [...firestoreAgents, ...sqlAgents];
 
