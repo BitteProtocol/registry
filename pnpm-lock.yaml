@@ -12,8 +12,8 @@ importers:
         specifier: ^1.1.11
         version: 1.1.11(zod@3.24.2)
       '@bitte-ai/data':
-        specifier: 0.1.0-fix-cicd2-460c6c4
-        version: 0.1.0-fix-cicd2-460c6c4(typescript@5.7.3)
+        specifier: 0.1.0-main-823016b
+        version: 0.1.0-main-823016b(typescript@5.7.3)
       '@google-cloud/firestore':
         specifier: ^7.11.0
         version: 7.11.0
@@ -363,8 +363,8 @@ packages:
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
 
-  '@bitte-ai/data@0.1.0-fix-cicd2-460c6c4':
-    resolution: {integrity: sha512-b3hmiSbimQMHaDD2ZmahVX6zTBxs2rsRnMEJDTuPA/I6Docu706xHfSAycLy5jkXz+Z2ukdjV7p8Ap/FnLLvvQ==}
+  '@bitte-ai/data@0.1.0-main-823016b':
+    resolution: {integrity: sha512-fJLik2cW1ncq9b3yzkuEBXdJDxMpYDMsk0ROBg8ypr+J5oT/8f8tCHIkwDov7/GIdP96iscwkUdjtffrfAf3Yg==}
 
   '@emnapi/runtime@1.3.1':
     resolution: {integrity: sha512-kEBmG8KyqtxJZv+ygbEim+KCGtIq1fC22Ms3S4ziXmYKm8uyoLX0MHONVKwp+9opg390VaKRNt4a7A9NwmpNhw==}
@@ -722,6 +722,9 @@ packages:
     resolution: {integrity: sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==}
     engines: {node: '>=14'}
 
+  '@popperjs/core@2.11.8':
+    resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
+
   '@prisma/client@6.4.1':
     resolution: {integrity: sha512-A7Mwx44+GVZVexT5e2GF/WcKkEkNNKbgr059xpr5mn+oUm2ZW1svhe+0TRNBwCdzhfIZ+q23jEgsNPvKD9u+6g==}
     engines: {node: '>=18.18'}
@@ -733,9 +736,6 @@ packages:
         optional: true
       typescript:
         optional: true
-
-  '@popperjs/core@2.11.8':
-    resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
 
   '@protobufjs/aspromise@1.1.2':
     resolution: {integrity: sha512-j+gKExEuLmKwvz3OgROXtrJ2UG2x8Ch2YZUxahh+s1F2HZ+wAceUNLkvy6zKCPVRkU++ZWQrdxsUeQXmcg4uoQ==}
@@ -4499,7 +4499,7 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@bitte-ai/data@0.1.0-fix-cicd2-460c6c4(typescript@5.7.3)':
+  '@bitte-ai/data@0.1.0-main-823016b(typescript@5.7.3)':
     dependencies:
       '@prisma/client': 6.4.1(typescript@5.7.3)
     transitivePeerDependencies:
@@ -4917,11 +4917,11 @@ snapshots:
   '@pkgjs/parseargs@0.11.0':
     optional: true
 
+  '@popperjs/core@2.11.8': {}
+
   '@prisma/client@6.4.1(typescript@5.7.3)':
     optionalDependencies:
       typescript: 5.7.3
-
-  '@popperjs/core@2.11.8': {}
 
   '@protobufjs/aspromise@1.1.2': {}
 

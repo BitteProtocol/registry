@@ -5,6 +5,7 @@ import {
 } from "@google-cloud/firestore";
 import { COLLECTIONS, BittePrimitiveNames } from "./constants";
 import { Tool } from "./types";
+import { Agent } from "@bitte-ai/data";
 
 export type FirestoreOperationResult = {
   success: boolean;

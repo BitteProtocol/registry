@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { queryAgents } from "@/lib/firestore";
 import { kv } from "@vercel/kv";
-import { listAiAgents, createAiAgent, ai_agent } from "@bitte-ai/data";
+import { listAgents, createAgent, Agent } from "@bitte-ai/data";
 
 export async function GET(request: NextRequest) {
   try {
@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
       category: category === "" ? undefined : category,
     });
     // FIXME: wait for version that is camel case
-    const sqlAgents = await listAiAgents();
+    const sqlAgents = await listAgents();
     const agents = [...firestoreAgents, ...sqlAgents];
 
     const agentIds = agents.map((agent) => agent.id);
@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    const newAgent: ai_agent = {
+    const newAgent: Agent = {
       ...body,
       verified: false,
       id: crypto.randomUUID(),
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    await createAiAgent(newAgent);
+    await createAgent(newAgent);
 
     return NextResponse.json(newAgent, { status: 201 });
   } catch (error) {
