@@ -4,15 +4,15 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
+    "build": "ln -sF node_modules/@bitte-ai/data/generated generated && next build",
+    "start": "ln -sF node_modules/@bitte-ai/data/generated generated && next start",
     "lint": "next lint",
     "test": "jest",
     "test:integration": "jest --config jest.integration.config.js"
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.1.11",
-    "@bitte-ai/data": "0.1.0-main-823016b",
+    "@bitte-ai/data": "0.1.0-add-binary-targets-43bf1f0",
     "@google-cloud/firestore": "^7.11.0",
     "@jest/globals": "^29.7.0",
     "@radix-ui/react-dialog": "^1.1.6",

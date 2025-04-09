@@ -12,8 +12,8 @@ importers:
         specifier: ^1.1.11
         version: 1.1.11(zod@3.24.2)
       '@bitte-ai/data':
-        specifier: 0.1.0-main-823016b
-        version: 0.1.0-main-823016b(typescript@5.7.3)
+        specifier: 0.1.0-add-binary-targets-43bf1f0
+        version: 0.1.0-add-binary-targets-43bf1f0(typescript@5.7.3)
       '@google-cloud/firestore':
         specifier: ^7.11.0
         version: 7.11.0
@@ -363,8 +363,8 @@ packages:
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
 
-  '@bitte-ai/data@0.1.0-main-823016b':
-    resolution: {integrity: sha512-fJLik2cW1ncq9b3yzkuEBXdJDxMpYDMsk0ROBg8ypr+J5oT/8f8tCHIkwDov7/GIdP96iscwkUdjtffrfAf3Yg==}
+  '@bitte-ai/data@0.1.0-add-binary-targets-43bf1f0':
+    resolution: {integrity: sha512-1NKG/ndbVetvjcD7Bcs+J/iJ6ZuSsdF2JrPzZxus6uQpnfuVxmDjL4wpkJO1lBtl1i/rxdfkn4L3a58DUuopwg==}
 
   '@emnapi/runtime@1.3.1':
     resolution: {integrity: sha512-kEBmG8KyqtxJZv+ygbEim+KCGtIq1fC22Ms3S4ziXmYKm8uyoLX0MHONVKwp+9opg390VaKRNt4a7A9NwmpNhw==}
@@ -4499,7 +4499,7 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@bitte-ai/data@0.1.0-main-823016b(typescript@5.7.3)':
+  '@bitte-ai/data@0.1.0-add-binary-targets-43bf1f0(typescript@5.7.3)':
     dependencies:
       '@prisma/client': 6.4.1(typescript@5.7.3)
     transitivePeerDependencies:
