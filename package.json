@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "ln -sF node_modules/@bitte-ai/data/generated generated && next build",
     "start": "ln -sF node_modules/@bitte-ai/data/generated generated && next start",
     "lint": "next lint",
@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.1.11",
-    "@bitte-ai/data": "0.1.0-add-binary-targets-43bf1f0",
+    "@bitte-ai/data": "0.1.0-add-binary-targets-da9433e",
     "@google-cloud/firestore": "^7.11.0",
     "@jest/globals": "^29.7.0",
     "@radix-ui/react-dialog": "^1.1.6",
