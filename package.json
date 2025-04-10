@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.1.11",
-    "@bitte-ai/data": "0.1.0-add-binary-targets-7ea1c6a",
+    "@bitte-ai/data": "0.1.0-main-02176a6",
     "@google-cloud/firestore": "^7.11.0",
     "@jest/globals": "^29.7.0",
     "@prisma/client": "6.6.0",
