@@ -4,17 +4,18 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "ln -sF node_modules/@bitte-ai/data/generated generated && next build",
-    "start": "ln -sF node_modules/@bitte-ai/data/generated generated && next start",
+    "build": "next build",
+    "start": "next start",
     "lint": "next lint",
     "test": "jest",
     "test:integration": "jest --config jest.integration.config.js"
   },
   "dependencies": {
     "@ai-sdk/openai": "^1.1.11",
-    "@bitte-ai/data": "0.1.0-add-binary-targets-da9433e",
+    "@bitte-ai/data": "0.1.0-add-binary-targets-7ea1c6a",
     "@google-cloud/firestore": "^7.11.0",
     "@jest/globals": "^29.7.0",
+    "@prisma/client": "6.6.0",
     "@radix-ui/react-dialog": "^1.1.6",
     "@radix-ui/react-slot": "^1.1.2",
     "@scalar/nextjs-api-reference": "^0.5.7",
@@ -55,8 +56,12 @@
     "jest-environment-node": "^29.7.0",
     "node-fetch": "2",
     "postcss": "^8",
+    "prisma": "6.6.0",
     "tailwindcss": "^3.4.17",
     "ts-jest": "^29.1.2",
     "typescript": "^5"
+  },
+  "prisma": {
+    "schema": "node_modules/@bitte-ai/data/prisma/schema.prisma"
   }
 }

@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  outputFileTracingRoot: __dirname,
 };
 
 export default nextConfig;
