@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { queryAgents } from "@/lib/firestore";
 import { kv } from "@vercel/kv";
-import { listAgents, createAgent, Agent } from "@bitte-ai/data";
+import { listAgentsFiltered, createAgent, Agent } from "@bitte-ai/data";
 import { toJson } from "@/lib/utils";
 
 export async function GET(request: NextRequest) {
@@ -13,16 +12,13 @@ export async function GET(request: NextRequest) {
     const verifiedOnly = searchParams.get("verifiedOnly") !== "false";
     const category = searchParams.get("category") || undefined;
 
-    // TODO: remove firestore after migration
-    const firestoreAgents = await queryAgents({
+    const agents = await listAgentsFiltered({
       verified: verifiedOnly,
       chainIds,
       offset,
       limit,
-      category: category === "" ? undefined : category,
+      categories: category ? [category] : undefined,
     });
-    const sqlAgents = await listAgents();
-    const agents = [...firestoreAgents, ...sqlAgents];
 
     const agentIds = agents.map((agent) => agent.id);
     const pingsByAgent = await getTotalPingsByAgentIds(agentIds);
