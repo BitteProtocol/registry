@@ -20,6 +20,10 @@ export async function GET(request: NextRequest) {
       categories: category ? [category] : undefined,
     });
 
+    if (agents.length === 0) {
+      return NextResponse.json(agents, { status: 200 });
+    }
+
     const agentIds = agents.map((agent) => agent.id);
     const pingsByAgent = await getTotalPingsByAgentIds(agentIds);
 
@@ -87,6 +91,10 @@ export async function POST(request: NextRequest) {
 const getTotalPingsByAgentIds = async (
   agentIds: string[]
 ): Promise<Record<string, number | null>> => {
+  if (agentIds.length === 0) {
+    return {};
+  }
+
   const pipeline = kv.pipeline();
   agentIds.forEach((id) => {
     pipeline.get<number>(`smart-action:v1.0:agent:${id}:pings`);
