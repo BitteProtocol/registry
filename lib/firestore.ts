@@ -142,9 +142,10 @@ export const queryAgents = async <T>(options: {
   offset?: number;
   limit?: number;
   category?: string | null;
+  accountId?: string | null;
 } = {}): Promise<T[]> => {
   let query: FirebaseFirestore.Query = db.collection(COLLECTIONS.AGENTS);
-  
+
   if (options.verified) {
     query = query.where('verified', '==', true);
   }
@@ -157,6 +158,10 @@ export const queryAgents = async <T>(options: {
     query = query.where('category', '==', options.category);
   }
 
+  if (options.accountId) {
+    query = query.where('accountId', '==', options.accountId);
+  }
+
   if (options.limit) {
     query = query.limit(options.limit);
   }
@@ -167,14 +172,14 @@ export const queryAgents = async <T>(options: {
 
   const snapshot = await query.get();
   const agents = snapshot.docs.map(doc => doc.data());
-  
+
   if (!options.withTools) {
     return agents.map(agent => {
       const { ...rest } = agent;
       return rest as T;
     });
   }
-  
+
   return agents as T[];
 };
 
@@ -186,7 +191,7 @@ export const queryTools = async <T>(options: {
 } = {}): Promise<T[]> => {
   let query: FirebaseFirestore.Query = db.collection(COLLECTIONS.AGENTS)
     .select('tools', 'image', 'chainIds');
-  
+
   if (options.verified) {
     query = query.where('verified', '==', true);
   }
@@ -200,7 +205,7 @@ export const queryTools = async <T>(options: {
 
   const snapshot = await query.get();
   const tools: Tool[] = [];
-  
+
   for (const doc of snapshot.docs) {
     const agent = doc.data();
     if (!agent.tools?.length) continue;
@@ -211,8 +216,8 @@ export const queryTools = async <T>(options: {
     };
 
     for (const tool of agent.tools) {
-      if (options.functionName && 
-          !tool.function.name.toLowerCase().includes(options.functionName.toLowerCase())) {
+      if (options.functionName &&
+        !tool.function.name.toLowerCase().includes(options.functionName.toLowerCase())) {
         continue;
       }
 

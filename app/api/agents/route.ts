@@ -12,6 +12,7 @@ export async function GET(request: NextRequest) {
     const offset = parseInt(searchParams.get("offset") || "0");
     const verifiedOnly = searchParams.get("verifiedOnly") !== "false";
     const category = searchParams.get("category") || undefined;
+    const accountId = searchParams.get("accountId") || undefined;
 
     const agents = await queryAgents<Agent>({
       verified: verifiedOnly,
@@ -19,6 +20,7 @@ export async function GET(request: NextRequest) {
       offset,
       limit,
       category: category === "" ? undefined : category,
+      accountId,
     });
 
     const agentIds = agents.map((agent) => agent.id);
