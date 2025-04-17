@@ -9,7 +9,10 @@ export async function GET(request: NextRequest) {
     const chainIds = searchParams.get("chainIds")?.split(",");
     const limit = parseInt(searchParams.get("limit") || "50");
     const offset = parseInt(searchParams.get("offset") || "0");
-    const verifiedOnly = searchParams.get("verifiedOnly") !== "false";
+    const verifiedOnlyParam = searchParams.get("verifiedOnly");
+    const verifiedOnly = verifiedOnlyParam
+      ? verifiedOnlyParam !== "false"
+      : undefined;
     const category = searchParams.get("category") || undefined;
 
     const agents = await listAgentsFiltered({
@@ -78,7 +81,9 @@ export async function POST(request: NextRequest) {
 
     await createAgent(newAgent);
 
-    return NextResponse.json(JSON.parse(stringifyJsonWithBigint(newAgent)), { status: 201 });
+    return NextResponse.json(JSON.parse(stringifyJsonWithBigint(newAgent)), {
+      status: 201,
+    });
   } catch (error) {
     console.error("Error creating agent:", error);
     return NextResponse.json(
