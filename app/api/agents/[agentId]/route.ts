@@ -1,14 +1,13 @@
-import { read } from "@/lib/firestore";
-import { COLLECTIONS } from "@/lib/constants";
-import { Agent } from "@/lib/types";
+import { getAgent } from "@bitte-ai/data";
 import { NextResponse } from "next/server";
+
 export async function GET(
   _request: Request,
   { params }: { params: Promise<{ agentId: string }> }
 ) {
   try {
     const agentId = (await params).agentId;
-    const agent = await read<Agent>(COLLECTIONS.AGENTS, agentId);
+    const agent = await getAgent(agentId);
 
     if (!agent) {
       return NextResponse.json({ error: "Agent not found" }, { status: 404 });

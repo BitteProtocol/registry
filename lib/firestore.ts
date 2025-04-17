@@ -1,10 +1,11 @@
 import {
+  CollectionReference,
   DocumentData,
   Firestore,
   WithFieldValue,
 } from "@google-cloud/firestore";
-import { COLLECTIONS, BittePrimitiveNames } from "./constants";
-import { Tool } from "./types";
+import { COLLECTIONS, BittePrimitiveNames } from "@/lib/constants";
+import { Tool, Converter } from "@/lib/types";
 import { Agent } from "@bitte-ai/data";
 
 export type FirestoreOperationResult = {
@@ -259,3 +260,13 @@ export const queryTools = async <T>(
 
   return uniqueTools as T[];
 };
+
+const converter = <T>(): Converter<T> => ({
+  toFirestore: (data) => data,
+  fromFirestore: (snap) => snap.data() as T,
+});
+
+export const collectionWithConverter = <T extends DocumentData>(
+  collection: string,
+): CollectionReference<T> =>
+  db.collection(collection).withConverter(converter<T>());

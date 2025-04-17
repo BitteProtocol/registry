@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
+import { NextRequest } from "next/server";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -17,3 +18,13 @@ export function toJson(object: unknown) {
         : value
   );
 }
+
+export const getBaseUrl = (req: NextRequest | Request) => {
+  const host = req.headers.get("host");
+  const protocol =
+    req.headers.get("x-forwarded-proto") ||
+    (process.env.NODE_ENV === "production" ? "https" : "http");
+  const baseUrl = `${protocol}://${host}`;
+
+  return baseUrl;
+};
