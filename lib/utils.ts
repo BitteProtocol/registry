@@ -11,7 +11,7 @@ export function cn(...inputs: ClassValue[]) {
  * @param object - The object to stringify
  * @returns A JSON stringified object with bigint values converted to strings
  */
-export function toJson(object: unknown) {
+export function stringifyJsonWithBigint(object: unknown) {
   return JSON.stringify(object, (_key, value) =>
     typeof value === 'bigint'
         ? value.toString()

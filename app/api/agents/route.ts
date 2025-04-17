@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { kv } from "@vercel/kv";
 import { listAgentsFiltered, createAgent, Agent } from "@bitte-ai/data";
-import { toJson } from "@/lib/utils";
+import { stringifyJsonWithBigint } from "@/lib/utils";
 
 export async function GET(request: NextRequest) {
   try {
@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
       (a, b) => (b.pings as number) - (a.pings as number)
     );
 
-    return NextResponse.json(JSON.parse(toJson(sortedAgents)));
+    return NextResponse.json(JSON.parse(stringifyJsonWithBigint(sortedAgents)));
   } catch (error) {
     console.error("Error fetching agents:", error);
     return NextResponse.json(
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
 
     await createAgent(newAgent);
 
-    return NextResponse.json(JSON.parse(toJson(newAgent)), { status: 201 });
+    return NextResponse.json(JSON.parse(stringifyJsonWithBigint(newAgent)), { status: 201 });
   } catch (error) {
     console.error("Error creating agent:", error);
     return NextResponse.json(
