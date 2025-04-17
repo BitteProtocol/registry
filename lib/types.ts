@@ -367,7 +367,7 @@ export type WalletAgentContext = {
   actionableSummary: string;
 };
 
-//---------------------------------- SQL ----------------------------------//
+//---------------------------- Firestore types ----------------------------//
 export interface Tool {
   id: string;
   agentId: string;
