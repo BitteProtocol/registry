@@ -1,8 +1,7 @@
-import { Agent } from "@/lib/types";
 import { NextRequest, NextResponse } from "next/server";
-import { write, queryAgents } from "@/lib/firestore";
-import { COLLECTIONS } from "@/lib/constants";
 import { kv } from "@vercel/kv";
+import { listAgentsFiltered, createAgent, Agent } from "@bitte-ai/data";
+import { stringifyJsonWithBigint } from "@/lib/utils";
 
 export async function GET(request: NextRequest) {
   try {
@@ -10,18 +9,25 @@ export async function GET(request: NextRequest) {
     const chainIds = searchParams.get("chainIds")?.split(",");
     const limit = parseInt(searchParams.get("limit") || "50");
     const offset = parseInt(searchParams.get("offset") || "0");
-    const verifiedOnly = searchParams.get("verifiedOnly") !== "false";
+    const verifiedOnlyParam = searchParams.get("verifiedOnly");
+    const verifiedOnly = verifiedOnlyParam
+      ? verifiedOnlyParam !== "false"
+      : undefined;
     const category = searchParams.get("category") || undefined;
     const accountId = searchParams.get("accountId") || undefined;
 
-    const agents = await queryAgents<Agent>({
+    const agents = await listAgentsFiltered({
       verified: verifiedOnly,
       chainIds,
       offset,
       limit,
-      category: category === "" ? undefined : category,
+      categories: category ? [category] : undefined,
       accountId,
     });
+
+    if (agents.length === 0) {
+      return NextResponse.json(agents, { status: 200 });
+    }
 
     const agentIds = agents.map((agent) => agent.id);
     const pingsByAgent = await getTotalPingsByAgentIds(agentIds);
@@ -35,7 +41,7 @@ export async function GET(request: NextRequest) {
       (a, b) => (b.pings as number) - (a.pings as number)
     );
 
-    return NextResponse.json(sortedAgents);
+    return NextResponse.json(JSON.parse(stringifyJsonWithBigint(sortedAgents)));
   } catch (error) {
     console.error("Error fetching agents:", error);
     return NextResponse.json(
@@ -75,13 +81,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const result = await write(COLLECTIONS.AGENTS, newAgent.id, newAgent);
+    await createAgent(newAgent);
 
-    if (!result.success) {
-      throw result.error;
-    }
-
-    return NextResponse.json(newAgent, { status: 201 });
+    return NextResponse.json(JSON.parse(stringifyJsonWithBigint(newAgent)), {
+      status: 201,
+    });
   } catch (error) {
     console.error("Error creating agent:", error);
     return NextResponse.json(
@@ -94,6 +98,10 @@ export async function POST(request: NextRequest) {
 const getTotalPingsByAgentIds = async (
   agentIds: string[]
 ): Promise<Record<string, number | null>> => {
+  if (agentIds.length === 0) {
+    return {};
+  }
+
   const pipeline = kv.pipeline();
   agentIds.forEach((id) => {
     pipeline.get<number>(`smart-action:v1.0:agent:${id}:pings`);

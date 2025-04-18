@@ -22,7 +22,10 @@ jobs:
           
       - name: Install dependencies
         run: pnpm install
-        
+
+      - name: Run Prisma generate
+        run: npx prisma generate
+
       - name: Run integration tests
         run: pnpm test:integration
         env:

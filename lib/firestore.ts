@@ -1,10 +1,12 @@
 import {
+  CollectionReference,
   DocumentData,
   Firestore,
   WithFieldValue,
 } from "@google-cloud/firestore";
-import { COLLECTIONS, BittePrimitiveNames } from "./constants";
-import { Tool } from "./types";
+import { COLLECTIONS, BittePrimitiveNames } from "@/lib/constants";
+import { Tool, Converter } from "@/lib/types";
+import { Agent } from "@bitte-ai/data";
 
 export type FirestoreOperationResult = {
   success: boolean;
@@ -135,27 +137,33 @@ export const catchDocumentNotFound = (err: Error): null => {
   throw err;
 };
 
-export const queryAgents = async <T>(options: {
-  verified?: boolean;
-  withTools?: boolean;
-  chainIds?: string[];
-  offset?: number;
-  limit?: number;
-  category?: string | null;
-  accountId?: string | null;
-} = {}): Promise<T[]> => {
+export const queryAgents = async (
+  options: {
+    verified?: boolean;
+    withTools?: boolean;
+    chainIds?: string[];
+    offset?: number;
+    limit?: number;
+    category?: string | null;
+    accountId?: string | null;
+  } = {}
+): Promise<Agent[]> => {
   let query: FirebaseFirestore.Query = db.collection(COLLECTIONS.AGENTS);
 
   if (options.verified) {
-    query = query.where('verified', '==', true);
+    query = query.where("verified", "==", true);
   }
 
   if (options.chainIds?.length) {
-    query = query.where('chainIds', 'array-contains-any', options.chainIds.map(id => parseInt(id)));
+    query = query.where(
+      "chainIds",
+      "array-contains-any",
+      options.chainIds.map((id) => parseInt(id))
+    );
   }
 
   if (options.category) {
-    query = query.where('category', '==', options.category);
+    query = query.where("category", "==", options.category);
   }
 
   if (options.accountId) {
@@ -171,33 +179,36 @@ export const queryAgents = async <T>(options: {
   }
 
   const snapshot = await query.get();
-  const agents = snapshot.docs.map(doc => doc.data());
+  const agents = snapshot.docs.map((doc) => doc.data());
 
   if (!options.withTools) {
-    return agents.map(agent => {
+    return agents.map((agent) => {
       const { ...rest } = agent;
-      return rest as T;
+      return rest as Agent;
     });
   }
 
-  return agents as T[];
+  return agents as Agent[];
 };
 
-export const queryTools = async <T>(options: {
-  verified?: boolean;
-  functionName?: string;
-  offset?: number;
-  chainId?: string;
-} = {}): Promise<T[]> => {
-  let query: FirebaseFirestore.Query = db.collection(COLLECTIONS.AGENTS)
-    .select('tools', 'image', 'chainIds');
+export const queryTools = async <T>(
+  options: {
+    verified?: boolean;
+    functionName?: string;
+    offset?: number;
+    chainId?: string;
+  } = {}
+): Promise<T[]> => {
+  let query: FirebaseFirestore.Query = db
+    .collection(COLLECTIONS.AGENTS)
+    .select("tools", "image", "chainIds");
 
   if (options.verified) {
-    query = query.where('verified', '==', true);
+    query = query.where("verified", "==", true);
   }
 
   if (options.chainId) {
-    query = query.where('chainIds', 'array-contains', options.chainId);
+    query = query.where("chainIds", "array-contains", options.chainId);
   }
 
   const limit = 100;
@@ -212,18 +223,22 @@ export const queryTools = async <T>(options: {
 
     const baseToolData = {
       image: agent.image,
-      chainIds: agent.chainIds || []
+      chainIds: agent.chainIds || [],
     };
 
     for (const tool of agent.tools) {
-      if (options.functionName &&
-        !tool.function.name.toLowerCase().includes(options.functionName.toLowerCase())) {
+      if (
+        options.functionName &&
+        !tool.function.name
+          .toLowerCase()
+          .includes(options.functionName.toLowerCase())
+      ) {
         continue;
       }
 
       tools.push({
         ...tool,
-        ...baseToolData
+        ...baseToolData,
       });
     }
   }
@@ -250,3 +265,13 @@ export const queryTools = async <T>(options: {
 
   return uniqueTools as T[];
 };
+
+const converter = <T>(): Converter<T> => ({
+  toFirestore: (data) => data,
+  fromFirestore: (snap) => snap.data() as T,
+});
+
+export const collectionWithConverter = <T extends DocumentData>(
+  collection: string,
+): CollectionReference<T> =>
+  db.collection(collection).withConverter(converter<T>());
