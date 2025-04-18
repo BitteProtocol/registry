@@ -15,8 +15,8 @@ importers:
         specifier: ^10.1.1
         version: 10.1.1(openapi-types@12.1.3)
       '@bitte-ai/data':
-        specifier: 0.1.0-add-filtered-gets-3bb408a
-        version: 0.1.0-add-filtered-gets-3bb408a(prisma@6.6.0(typescript@5.7.3))(typescript@5.7.3)
+        specifier: 0.1.0-add-filtered-gets-3ee875c
+        version: 0.1.0-add-filtered-gets-3ee875c(prisma@6.6.0(typescript@5.7.3))(typescript@5.7.3)
       '@google-cloud/firestore':
         specifier: ^7.11.0
         version: 7.11.0
@@ -453,8 +453,8 @@ packages:
   '@bcoe/v8-coverage@0.2.3':
     resolution: {integrity: sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==}
 
-  '@bitte-ai/data@0.1.0-add-filtered-gets-3bb408a':
-    resolution: {integrity: sha512-cjxRkaE3UZ/pG6iIjvabYo2h5FetUHMieF2rQRpdKv8puyZGfqEBK6o7EA9HpdbooglPihn4gkyY9Z/kMLnP0w==}
+  '@bitte-ai/data@0.1.0-add-filtered-gets-3ee875c':
+    resolution: {integrity: sha512-sQaFXKv971VeinVuURD/aVhLh0FBpsKLHYwnlckU/gvTBNx5tLfY5rY+3SG1oUUjJesMNy1wNV9VmHZE14PAZQ==}
 
   '@emnapi/runtime@1.3.1':
     resolution: {integrity: sha512-kEBmG8KyqtxJZv+ygbEim+KCGtIq1fC22Ms3S4ziXmYKm8uyoLX0MHONVKwp+9opg390VaKRNt4a7A9NwmpNhw==}
@@ -5630,7 +5630,7 @@ snapshots:
 
   '@bcoe/v8-coverage@0.2.3': {}
 
-  '@bitte-ai/data@0.1.0-add-filtered-gets-3bb408a(prisma@6.6.0(typescript@5.7.3))(typescript@5.7.3)':
+  '@bitte-ai/data@0.1.0-add-filtered-gets-3ee875c(prisma@6.6.0(typescript@5.7.3))(typescript@5.7.3)':
     dependencies:
       '@prisma/client': 6.6.0(prisma@6.6.0(typescript@5.7.3))(typescript@5.7.3)
     transitivePeerDependencies:

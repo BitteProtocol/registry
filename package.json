@@ -14,7 +14,7 @@
   "dependencies": {
     "@ai-sdk/openai": "^1.1.11",
     "@apidevtools/swagger-parser": "^10.1.1",
-    "@bitte-ai/data": "0.1.0-add-filtered-gets-3bb408a",
+    "@bitte-ai/data": "0.1.0-add-filtered-gets-3ee875c",
     "@google-cloud/firestore": "^7.11.0",
     "@jest/globals": "^29.7.0",
     "@mintbase-js/data": "^0.6.6",
