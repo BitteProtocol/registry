@@ -14,6 +14,7 @@ export async function GET(request: NextRequest) {
       ? verifiedOnlyParam !== "false"
       : undefined;
     const category = searchParams.get("category") || undefined;
+    const accountId = searchParams.get("accountId") || undefined;
 
     const agents = await listAgentsFiltered({
       verified: verifiedOnly,
@@ -21,6 +22,7 @@ export async function GET(request: NextRequest) {
       offset,
       limit,
       categories: category ? [category] : undefined,
+      accountId,
     });
 
     if (agents.length === 0) {

@@ -41,6 +41,12 @@ export const openApiSpec: OpenAPIV3.Document = {
             in: 'query',
             description: 'Number of agents to skip',
             schema: { type: 'integer', default: 0 },
+          },
+          {
+            name: 'accountId',
+            in: 'query',
+            description: 'Filter agents by account ID',
+            schema: { type: 'string' },
           }
         ],
         responses: {

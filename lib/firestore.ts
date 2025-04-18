@@ -145,6 +145,7 @@ export const queryAgents = async (
     offset?: number;
     limit?: number;
     category?: string | null;
+    accountId?: string | null;
   } = {}
 ): Promise<Agent[]> => {
   let query: FirebaseFirestore.Query = db.collection(COLLECTIONS.AGENTS);
@@ -163,6 +164,10 @@ export const queryAgents = async (
 
   if (options.category) {
     query = query.where("category", "==", options.category);
+  }
+
+  if (options.accountId) {
+    query = query.where('accountId', '==', options.accountId);
   }
 
   if (options.limit) {
