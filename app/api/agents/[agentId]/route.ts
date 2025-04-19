@@ -1,5 +1,6 @@
 import { getAgent } from "@bitte-ai/data";
 import { NextResponse } from "next/server";
+import { stringifyJsonWithBigint } from "@/lib/utils";
 
 export async function GET(
   _request: Request,
@@ -13,7 +14,13 @@ export async function GET(
       return NextResponse.json({ error: "Agent not found" }, { status: 404 });
     }
 
-    return NextResponse.json(agent);
+    const serializedAgent = stringifyJsonWithBigint(agent);
+    return new NextResponse(serializedAgent, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
   } catch (error) {
     console.error("Error fetching agent:", error);
     return NextResponse.json(
