@@ -1,21 +1,15 @@
-import SwaggerParser from "@apidevtools/swagger-parser";
-import { Tool, JSONValue, jsonSchema } from "ai";
-import { OpenAI } from "openai";
-import { DEFAULT_MODEL } from "@/lib/constants";
+import SwaggerParser from '@apidevtools/swagger-parser';
+import { JSONValue } from 'ai';
+import { OpenAI } from 'openai';
+import { DEFAULT_MODEL } from '@/lib/constants';
 import type {
-  AnyBitteTool,
-  BitteAssistant,
   BitteAssistantConfig,
   BitteMetadata,
   BitteOpenAPISpec,
-  BittePrimitiveRef,
   BitteToolExecutor,
-  BitteToolSpec,
   PluginToolSpec,
-} from "@/lib/types";
-import { FunctionTool } from "openai/resources/beta/assistants.mjs";
-import { errorString } from "./error";
-import { BITTE_PRIMITIVES, BittePrimitiveName } from "@/app/primitives";
+} from '@/lib/types';
+import { errorString } from './error';
 
 const openai = new OpenAI();
 export const createPluginToolsFromOpenAPISpec = ({
@@ -26,17 +20,17 @@ export const createPluginToolsFromOpenAPISpec = ({
   pluginId: string;
 }): PluginToolSpec[] => {
   const apiUrl =
-    spec.servers?.[0].url.replace("https://", "").replace(/\/$/, "") ||
+    spec.servers?.[0].url.replace('https://', '').replace(/\/$/, '') ||
     pluginId;
 
   if (!apiUrl) {
-    throw new Error("apiUrl not found in OpenAPI spec");
+    throw new Error('apiUrl not found in OpenAPI spec');
   }
 
   const tools: PluginToolSpec[] = [];
 
   if (!spec.paths) {
-    throw new Error("Paths not found in OpenAPI spec");
+    throw new Error('Paths not found in OpenAPI spec');
   }
 
   for (const [path, pathDetails] of Object.entries(spec.paths)) {
@@ -44,13 +38,13 @@ export const createPluginToolsFromOpenAPISpec = ({
       continue;
     }
     for (const [httpMethod, methodDetails] of Object.entries(pathDetails)) {
-      if (typeof methodDetails === "string" || Array.isArray(methodDetails)) {
-        throw new Error("Invalid method details in OpenAPI spec");
+      if (typeof methodDetails === 'string' || Array.isArray(methodDetails)) {
+        throw new Error('Invalid method details in OpenAPI spec');
       }
       const functionName = methodDetails?.operationId;
       if (!functionName) {
         throw new Error(
-          "OperationId/functionName must be defined for each operation"
+          'OperationId/functionName must be defined for each operation'
         );
       }
 
@@ -60,9 +54,9 @@ export const createPluginToolsFromOpenAPISpec = ({
           param
         ) => {
           if (
-            "name" in param &&
+            'name' in param &&
             param.schema &&
-            "type" in param.schema &&
+            'type' in param.schema &&
             param.schema.type &&
             param.description
           ) {
@@ -79,14 +73,14 @@ export const createPluginToolsFromOpenAPISpec = ({
       const tool: PluginToolSpec = {
         id: `${pluginId}-${functionName}`,
         agentId: pluginId,
-        type: "function",
+        type: 'function',
         function: {
           name: functionName,
           description: methodDetails.description || undefined,
           parameters:
             parameters && Object.keys(parameters).length > 0
               ? {
-                  type: "object",
+                  type: 'object',
                   properties: parameters,
                   required: Object.keys(parameters) || [],
                 }
@@ -142,21 +136,21 @@ export const generateAssistantFromOpenAPISpec = async ({
   spec,
 }: {
   spec: BitteOpenAPISpec;
-}): Promise<Omit<BitteAssistantConfig, "id">> => {
+}): Promise<Omit<BitteAssistantConfig, 'id'>> => {
   const completionResponse = await openai.chat.completions.create({
     messages: [
       {
-        role: "system",
+        role: 'system',
         content: CREATE_ASSISTANT_PROMPT,
       },
       {
-        role: "user",
+        role: 'user',
         content: JSON.stringify(spec),
       },
     ],
     model: DEFAULT_MODEL,
     response_format: {
-      type: "json_object",
+      type: 'json_object',
     },
   });
 
@@ -175,7 +169,7 @@ export const generateAssistantFromOpenAPISpec = async ({
     !assistantObject.description ||
     !assistantObject.instructions
   ) {
-    throw new Error("Failed to generate a valid assistant from OpenAPI spec");
+    throw new Error('Failed to generate a valid assistant from OpenAPI spec');
   }
 
   return assistantObject;
@@ -188,7 +182,7 @@ export const createExecutor = (
   return async (args) => {
     try {
       const { baseUrl, path, httpMethod } = tool.execution;
-      const fullBaseUrl = baseUrl.startsWith("http")
+      const fullBaseUrl = baseUrl.startsWith('http')
         ? baseUrl
         : `https://${baseUrl}`;
 
@@ -207,7 +201,7 @@ export const createExecutor = (
 
       // Setup request
       const headers: HeadersInit = {
-        ...(metadata && { "mb-metadata": JSON.stringify(metadata) }),
+        ...(metadata && { 'mb-metadata': JSON.stringify(metadata) }),
       };
 
       const method = httpMethod.toUpperCase();
@@ -221,12 +215,12 @@ export const createExecutor = (
 
       const queryString = queryParams.toString();
       if (queryString) {
-        url += (url.includes("?") ? "&" : "?") + queryString;
+        url += (url.includes('?') ? '&' : '?') + queryString;
       }
 
       // Handle request body
-      if (["POST", "PUT", "PATCH", "DELETE", "OPTIONS"].includes(method)) {
-        headers["Content-Type"] = "application/json";
+      if (['POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'].includes(method)) {
+        headers['Content-Type'] = 'application/json';
         fetchOptions.body = JSON.stringify(remainingArgs);
       }
 
@@ -239,82 +233,17 @@ export const createExecutor = (
         );
       }
       // Parse response based on content type
-      const contentType = response.headers.get("Content-Type") || "";
-      const data = await (contentType.includes("application/json")
+      const contentType = response.headers.get('Content-Type') || '';
+      const data = await (contentType.includes('application/json')
         ? response.json()
-        : contentType.includes("text")
-          ? response.text()
-          : response.blob());
+        : contentType.includes('text')
+        ? response.text()
+        : response.blob());
 
       return { data };
     } catch (error) {
       return { error: errorString(error) };
     }
-  };
-};
-export const createCoreTool = (
-  tool: BitteToolSpec,
-  metadata?: BitteMetadata
-): Tool => {
-  const { function: func } = tool;
-  const baseTool = {
-    parameters: jsonSchema(func.parameters || {}),
-    description: func.description,
-  };
-
-  if (isBittePrimitiveName(func.name)) {
-    return convertToCoreTool(BITTE_PRIMITIVES[func.name], metadata);
-  }
-
-  if (metadata?.localAgent) {
-    return baseTool;
-  }
-
-  if ("execution" in tool) {
-    return {
-      ...baseTool,
-      execute: async (args) => createExecutor(tool, metadata)(args),
-    };
-  }
-
-  throw new Error(`Failed to create CoreTool for ${func.name}`);
-};
-
-const convertToCoreTool = (
-  tool: AnyBitteTool,
-  metadata?: BitteMetadata
-): Tool => {
-  return {
-    parameters: jsonSchema(tool.toolSpec.function.parameters || {}),
-    description: tool.toolSpec.function.description,
-    execute: tool.execute
-      ? async (args) => tool.execute?.(args, metadata)
-      : undefined,
-  };
-};
-
-export const createBitteAssistant = (
-  assistantConfig: BitteAssistantConfig,
-  metadata?: BitteMetadata
-): BitteAssistant => {
-  if (!assistantConfig.tools || assistantConfig.tools.length === 0) {
-    return {
-      ...assistantConfig,
-      tools: {},
-    };
-  }
-
-  const tools = assistantConfig.tools.reduce(
-    (acc, tool) => {
-      acc[tool.function.name] = createCoreTool(tool, metadata);
-      return acc;
-    },
-    {} as Record<string, Tool>
-  );
-
-  return {
-    ...assistantConfig,
-    tools,
   };
 };
 
@@ -324,31 +253,31 @@ export const processPluginId = (
 ): { pluginId?: string; error?: string } => {
   if (!urlParam) {
     return {
-      error: "Missing pluginId in URL i.e.  /api/ai-plugins/[pluginId]",
+      error: 'Missing pluginId in URL i.e.  /api/ai-plugins/[pluginId]',
     };
   }
 
-  if (urlParam === "{pluginId}") {
+  if (urlParam === '{pluginId}') {
     return {
-      error: "Missing pluginId, found placeholder {pluginId}",
+      error: 'Missing pluginId, found placeholder {pluginId}',
     };
   }
 
-  if (urlParam.startsWith("http://")) {
-    return { error: "Plugin URL must use HTTPS" };
+  if (urlParam.startsWith('http://')) {
+    return { error: 'Plugin URL must use HTTPS' };
   }
 
   try {
-    const urlWithProtocol = urlParam.startsWith("https://")
+    const urlWithProtocol = urlParam.startsWith('https://')
       ? urlParam
       : `https://${urlParam}`;
 
     const url = new URL(urlWithProtocol);
-    const pluginId = url.hostname + url.pathname.replace(/\/$/, ""); // remove trailing slash
+    const pluginId = url.hostname + url.pathname.replace(/\/$/, ''); // remove trailing slash
 
     return { pluginId };
   } catch (error) {
-    return { error: "Invalid pluginId provided. Error: " + errorString(error) };
+    return { error: 'Invalid pluginId provided. Error: ' + errorString(error) };
   }
 };
 
@@ -367,15 +296,15 @@ export const sanitizeSpec = async (
           (item) =>
             item !== null &&
             item !== undefined &&
-            item !== "" &&
-            (typeof item !== "object" || Object.keys(item).length > 0)
+            item !== '' &&
+            (typeof item !== 'object' || Object.keys(item).length > 0)
         );
 
       // Convert nested arrays to objects
       return sanitizedArray.map((item, index) =>
         Array.isArray(item) ? { [`item_${index}`]: item } : item
       );
-    } else if (typeof value === "object" && value !== null) {
+    } else if (typeof value === 'object' && value !== null) {
       // Handle objects
       const sanitizedObj: Record<string, JSONValue> = {};
       for (const [key, val] of Object.entries(value)) {
@@ -387,101 +316,11 @@ export const sanitizeSpec = async (
       return Object.keys(sanitizedObj).length > 0 ? sanitizedObj : null;
     } else {
       // Handle primitive values
-      return value === "" || value === null || value === undefined
+      return value === '' || value === null || value === undefined
         ? null
         : value;
     }
   };
 
   return sanitize(validatedSpec);
-};
-
-export const createBitteAgentConfigFromSpec = async ({
-  rawSpec,
-  pluginId,
-  accountId: specAccountId,
-}: {
-  rawSpec: BitteOpenAPISpec;
-  pluginId: string;
-  accountId?: string;
-}): Promise<BitteAssistantConfig> => {
-  try {
-    const spec = await sanitizeSpec(rawSpec);
-
-    const pluginTools = createPluginToolsFromOpenAPISpec({ spec, pluginId });
-
-    const assistantDefinition =
-      spec["x-mb"].assistant ||
-      (await generateAssistantFromOpenAPISpec({ spec }));
-
-    if (!assistantDefinition) {
-      const error = "Failed to get or generate assistant definition";
-      console.error({
-        step: "Assistant Definition",
-        error,
-        details: { spec: spec["x-mb"] },
-      });
-      throw new Error(error);
-    }
-
-    const accountId = spec["x-mb"]?.["account-id"] || specAccountId || "anon";
-
-    if (!accountId) {
-      const error = "Missing accountId in plugin spec or bitte-api-key";
-      console.error({
-        step: "Account ID Processing",
-        error,
-      });
-      throw new Error(error);
-    }
-
-    const primitiveTools = findPrimitiveTools(assistantDefinition.tools);
-
-    const assistant: BitteAssistantConfig = {
-      id: pluginId,
-      name: assistantDefinition.name || spec.info.title || "",
-      accountId,
-      description:
-        assistantDefinition.description || spec.info.description || "",
-      instructions:
-        assistantDefinition.instructions || spec.info.description || "",
-      tools: [...primitiveTools, ...pluginTools],
-      image: assistantDefinition.image,
-      categories: assistantDefinition.categories,
-      repo: assistantDefinition.repo,
-      verified: false,
-      chainIds: assistantDefinition.chainIds,
-    };
-
-    return assistant;
-  } catch (error) {
-    const errorMessage = errorString(error);
-    console.error(`Error converting spec to Bitte Agent: ${errorMessage}`);
-    throw new Error(errorMessage);
-  }
-};
-
-export const BITTE_PRIMITIVE_SPECS = Object.fromEntries(
-  Object.entries(BITTE_PRIMITIVES).map(([key, value]) => [key, value.toolSpec]),
-) as Record<BittePrimitiveName, BitteToolSpec>;
-
-
-export const isBittePrimitiveName = (
-  value: unknown
-): value is BittePrimitiveName => {
-  return Object.values(BittePrimitiveName).includes(
-    value as BittePrimitiveName
-  );
-};
-export const findPrimitiveTools = (
-  tools: BittePrimitiveRef[] | undefined,
-): FunctionTool[] => {
-  return (
-    tools?.flatMap(
-      (tool) =>
-        Object.values(BITTE_PRIMITIVE_SPECS).find(
-          (p) => p.function.name === tool.type,
-        ) || [],
-    ) || []
-  );
 };
