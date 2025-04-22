@@ -237,7 +237,7 @@ export const POST = withUnkey(
 export const PUT = withUnkey(
   async (req: NextRequestWithUnkeyContext, context: NextContext) => {
     try {
-      const urlParam = (await context.params)["pluginIds"]?.[0];
+      const urlParam = (await context.params)["pluginId"] as string;
       if (!urlParam) {
         return NextResponse.json(
           {
@@ -344,6 +344,8 @@ export const PUT = withUnkey(
             .map((t) => t.type) || [],
       };
 
+      console.log({ agent });
+
       try {
         // TODO: update using data package functions?
         await prismaClient.$transaction([
@@ -391,7 +393,7 @@ export const PUT = withUnkey(
 export const DELETE = withUnkey(
   async (req: NextRequestWithUnkeyContext, context: NextContext) => {
     try {
-      const urlParam = (await context.params)["pluginIds"]?.[0];
+      const urlParam = (await context.params)["pluginId"] as string;
       if (!urlParam) {
         return NextResponse.json(
           {
