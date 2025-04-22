@@ -65,7 +65,7 @@ export const POST = withUnkey(
   async (req: NextRequestWithUnkeyContext, context: NextContext) => {
     try {
       // 1. Validate URL Parameter
-      const urlParam = (await context.params)["pluginIds"]?.[0];
+      const urlParam = (await context.params)["pluginId"] as string;
       if (!urlParam) {
         const error =
           "Missing pluginId in request params i.e. /api/ai-plugins/[pluginId]";
