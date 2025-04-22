@@ -194,8 +194,8 @@ export const POST = withUnkey(
         tools: pluginTools.map((t) => t.id),
         primitives:
           assistantDefinition.tools
-            ?.filter((t) => isBittePrimitiveName(t.function.name))
-            .map((t) => t.function.name) || [],
+            ?.filter((t) => isBittePrimitiveName(t.type))
+            .map((t) => t.type) || [],
       };
 
       // 13. Prepare and Execute Batch Write
@@ -340,8 +340,8 @@ export const PUT = withUnkey(
         tools: pluginTools.map((t) => t.id),
         primitives:
           assistantDefinition.tools
-            ?.filter((t) => isBittePrimitiveName(t.function.name))
-            .map((t) => t.function.name) || [],
+            ?.filter((t) => isBittePrimitiveName(t.type))
+            .map((t) => t.type) || [],
       };
 
       try {
