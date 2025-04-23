@@ -344,8 +344,6 @@ export const PUT = withUnkey(
             .map((t) => t.type) || [],
       };
 
-      console.log({ agent });
-
       try {
         // TODO: update using data package functions?
         await prismaClient.$transaction([
@@ -355,7 +353,7 @@ export const PUT = withUnkey(
           }),
           prismaClient.agent.update({ where: { id: pluginId }, data: agent }),
           prismaClient.tool.deleteMany({
-            where: { id: { in: pluginTools.map((t) => t.id) } },
+            where: { agentId: pluginId },
           }),
           prismaClient.tool.createMany({ data: pluginTools }),
         ]);
