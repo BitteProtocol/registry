@@ -357,12 +357,7 @@ export const PUT = withUnkey(
           prismaClient.tool.deleteMany({
             where: { id: { in: pluginTools.map((t) => t.id) } },
           }),
-          ...pluginTools.map((tool) =>
-            prismaClient.tool.update({
-              where: { id: tool.id },
-              data: tool,
-            })
-          ),
+          prismaClient.tool.createMany({ data: pluginTools }),
         ]);
       } catch (error) {
         console.error(error);
