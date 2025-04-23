@@ -1,5 +1,11 @@
 import SwaggerParser from "@apidevtools/swagger-parser";
-import { getPlugin, Prisma, Agent, prismaClient, getAgent } from "@bitte-ai/data";
+import {
+  getPlugin,
+  Prisma,
+  Agent,
+  prismaClient,
+  getAgent,
+} from "@bitte-ai/data";
 import { NextResponse } from "next/server";
 import {
   NextContext,
@@ -10,15 +16,13 @@ import {
   ALLOW_EXTERNAL_REQUEST_HEADERS,
   OPEN_API_SPEC_PATH,
 } from "@/lib/constants";
-import {
-  BitteOpenAPISpec,
-  PluginToolSpec,
-} from "@/lib/types";
+import { BitteOpenAPISpec, PluginToolSpec } from "@/lib/types";
 import { unkeyConfig } from "@/lib/unkey";
 import { getBaseUrl } from "@/lib/utils";
 import { JSONValue } from "ai";
 import { generateAssistantFromOpenAPISpec } from "@/lib/plugins";
 import { errorString } from "@/lib/error";
+import { isBittePrimitiveName } from "@/app/primitives";
 
 export const GET = async (
   _request: Request,
@@ -61,7 +65,7 @@ export const POST = withUnkey(
   async (req: NextRequestWithUnkeyContext, context: NextContext) => {
     try {
       // 1. Validate URL Parameter
-      const urlParam = (await context.params)["pluginIds"]?.[0];
+      const urlParam = (await context.params)["pluginId"] as string;
       if (!urlParam) {
         const error =
           "Missing pluginId in request params i.e. /api/ai-plugins/[pluginId]";
@@ -105,7 +109,9 @@ export const POST = withUnkey(
 
       // 6. Check for Existing Plugin
       const existingPlugin = await getPlugin(pluginId);
-      const debugUrl = `${getBaseUrl(req)}/smart-actions/prompt/how%20can%20you%20assist%20me%3F?mode=debug&agentId=${pluginId}`;
+      const debugUrl = `${getBaseUrl(
+        req
+      )}/smart-actions/prompt/how%20can%20you%20assist%20me%3F?mode=debug&agentId=${pluginId}`;
 
       if (existingPlugin) {
         const error = "Plugin already registered";
@@ -185,6 +191,11 @@ export const POST = withUnkey(
         repo: assistantDefinition.repo || null,
         verified: false,
         chainIds: assistantDefinition.chainIds?.map((cid) => BigInt(cid)) || [],
+        tools: pluginTools.map((t) => t.id),
+        primitives:
+          assistantDefinition.tools
+            ?.filter((t) => isBittePrimitiveName(t.type))
+            .map((t) => t.type) || [],
       };
 
       // 13. Prepare and Execute Batch Write
@@ -226,7 +237,7 @@ export const POST = withUnkey(
 export const PUT = withUnkey(
   async (req: NextRequestWithUnkeyContext, context: NextContext) => {
     try {
-      const urlParam = (await context.params)["pluginIds"]?.[0];
+      const urlParam = (await context.params)["pluginId"] as string;
       if (!urlParam) {
         return NextResponse.json(
           {
@@ -326,7 +337,14 @@ export const PUT = withUnkey(
           categories: existingAssistant.categories,
         }),
         repo: existingAssistant.repo || null,
+        tools: pluginTools.map((t) => t.id),
+        primitives:
+          assistantDefinition.tools
+            ?.filter((t) => isBittePrimitiveName(t.type))
+            .map((t) => t.type) || [],
       };
+
+      console.log({ agent });
 
       try {
         // TODO: update using data package functions?
@@ -375,7 +393,7 @@ export const PUT = withUnkey(
 export const DELETE = withUnkey(
   async (req: NextRequestWithUnkeyContext, context: NextContext) => {
     try {
-      const urlParam = (await context.params)["pluginIds"]?.[0];
+      const urlParam = (await context.params)["pluginId"] as string;
       if (!urlParam) {
         return NextResponse.json(
           {
@@ -553,7 +571,6 @@ const sanitizeSpec = async (
 
   return sanitize(validatedSpec);
 };
-
 
 const transformPlugin = (id: string, spec: BitteOpenAPISpec) => {
   const transformed = {

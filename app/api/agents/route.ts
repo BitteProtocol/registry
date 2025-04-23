@@ -67,6 +67,7 @@ export async function POST(request: NextRequest) {
       "description",
       "instructions",
       "tools",
+      "primitives",
       "image",
       "generatedDescription",
     ];
