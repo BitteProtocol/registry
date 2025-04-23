@@ -354,11 +354,13 @@ export const PUT = withUnkey(
             data: transformPlugin(pluginId, plugin),
           }),
           prismaClient.agent.update({ where: { id: pluginId }, data: agent }),
+          prismaClient.tool.deleteMany({
+            where: { id: { in: pluginTools.map((t) => t.id) } },
+          }),
           ...pluginTools.map((tool) =>
-            prismaClient.tool.upsert({
+            prismaClient.tool.update({
               where: { id: tool.id },
-              update: tool,
-              create: tool,
+              data: tool,
             })
           ),
         ]);
