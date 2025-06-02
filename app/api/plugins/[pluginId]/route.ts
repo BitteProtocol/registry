@@ -190,12 +190,15 @@ export const POST = withUnkey(
         categories: assistantDefinition.categories || [],
         repo: assistantDefinition.repo || null,
         verified: false,
-        chainIds: assistantDefinition.chainIds?.map((cid) => BigInt(cid)) || [],
+        chainIds:
+          assistantDefinition.chainIds?.map((cid) => cid.toString()) || [],
         tools: pluginTools.map((t) => t.id),
         primitives:
           assistantDefinition.tools
             ?.filter((t) => isBittePrimitiveName(t.type))
             .map((t) => t.type) || [],
+        createdAt: new Date(),
+        updatedAt: null,
       };
 
       // 13. Prepare and Execute Batch Write
@@ -320,28 +323,22 @@ export const PUT = withUnkey(
       }
 
       // Match tools with primitives for full function definitions
-      const agent: Agent = {
-        id: pluginId,
+      const agent: Partial<Agent> = {
         name: assistantDefinition.name || plugin.info.title || "",
         accountId: accountId || null,
-        email: null, // FIXME: always null?
-        keyId,
         description:
           assistantDefinition.description || plugin.info.description || "",
         instructions:
           assistantDefinition.instructions || plugin.info.description || "",
         image: assistantDefinition.image || null,
-        verified: existingAssistant.verified,
-        chainIds: assistantDefinition.chainIds?.map((cid) => BigInt(cid)) || [],
-        ...(existingAssistant?.categories && {
-          categories: existingAssistant.categories,
-        }),
-        repo: existingAssistant.repo || null,
+        chainIds:
+          assistantDefinition.chainIds?.map((cid) => cid.toString()) || [],
         tools: pluginTools.map((t) => t.id),
         primitives:
           assistantDefinition.tools
             ?.filter((t) => isBittePrimitiveName(t.type))
             .map((t) => t.type) || [],
+        updatedAt: new Date(),
       };
 
       try {
