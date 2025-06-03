@@ -15,8 +15,10 @@ export async function GET(request: NextRequest) {
       : undefined;
     const category = searchParams.get("category") || undefined;
     const accountId = searchParams.get("accountId") || undefined;
+    const searchTerm = searchParams.get("searchTerm") || undefined;
 
     const agents = await listAgentsFiltered({
+      searchTerm,
       verified: verifiedOnly,
       chainIds,
       offset,
