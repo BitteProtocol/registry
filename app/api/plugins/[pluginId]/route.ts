@@ -1,8 +1,8 @@
 import SwaggerParser from "@apidevtools/swagger-parser";
 import {
   getPlugin,
-  Prisma,
-  Agent,
+  type Prisma,
+  type Agent,
   prismaClient,
   getAgent,
 } from "@bitte-ai/data";
@@ -143,6 +143,7 @@ export const POST = withUnkey(
           (tool) => ({
             ...tool,
             function: tool.function as unknown as Prisma.InputJsonValue,
+            createdAt: new Date(),
           })
         );
       } catch (e: unknown) {
@@ -200,12 +201,13 @@ export const POST = withUnkey(
         createdAt: new Date(),
         updatedAt: null,
       };
+      const pluginData = transformPlugin(pluginId, spec);
 
       // 13. Prepare and Execute Batch Write
       try {
         await prismaClient.$transaction([
           prismaClient.plugin.create({
-            data: transformPlugin(pluginId, spec),
+            data: { ...pluginData, createdAt: new Date() },
           }),
           prismaClient.agent.create({ data: agent }),
           prismaClient.tool.createMany({ data: pluginTools }),
@@ -304,6 +306,7 @@ export const PUT = withUnkey(
       }).map((tool) => ({
         ...tool,
         function: tool.function as unknown as Prisma.InputJsonValue,
+        createdAt: new Date(),
       }));
 
       const assistantDefinition =
@@ -340,13 +343,14 @@ export const PUT = withUnkey(
             .map((t) => t.type) || [],
         updatedAt: new Date(),
       };
+      const pluginData = transformPlugin(pluginId, plugin);
 
       try {
         // TODO: update using data package functions?
         await prismaClient.$transaction([
           prismaClient.plugin.update({
             where: { id: pluginId },
-            data: transformPlugin(pluginId, plugin),
+            data: { ...pluginData, updatedAt: new Date() },
           }),
           prismaClient.agent.update({ where: { id: pluginId }, data: agent }),
           prismaClient.tool.deleteMany({
@@ -543,7 +547,8 @@ const sanitizeSpec = async (
       return sanitizedArray.map((item, index) =>
         Array.isArray(item) ? { [`item_${index}`]: item } : item
       );
-    } else if (typeof value === "object" && value !== null) {
+    }
+    if (typeof value === "object" && value !== null) {
       // Handle objects
       const sanitizedObj: Record<string, JSONValue> = {};
       for (const [key, val] of Object.entries(value)) {
@@ -553,12 +558,11 @@ const sanitizeSpec = async (
         }
       }
       return Object.keys(sanitizedObj).length > 0 ? sanitizedObj : null;
-    } else {
-      // Handle primitive values
-      return value === "" || value === null || value === undefined
-        ? null
-        : value;
     }
+    // Handle primitive values
+    return value === "" || value === null || value === undefined
+      ? null
+      : value;
   };
 
   return sanitize(validatedSpec);
@@ -578,11 +582,11 @@ const transformPlugin = (id: string, spec: BitteOpenAPISpec) => {
     extra: {},
   };
 
-  Object.entries(spec).forEach(([k, v]) => {
+  for (const [k, v] of Object.entries(spec)) {
     if (!Object.keys(transformed).includes(k)) {
       (transformed.extra as Record<string, unknown>)[k] = v;
     }
-  });
+  }
 
   return transformed;
 };
