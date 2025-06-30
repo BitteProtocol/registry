@@ -7,7 +7,7 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const chainIds = searchParams.get("chainIds")?.split(",");
-    const limit = parseInt(searchParams.get("limit") || "5000");
+    const limit = parseInt(searchParams.get("limit") || "20000");
     const offset = parseInt(searchParams.get("offset") || "0");
     const verifiedOnlyParam = searchParams.get("verifiedOnly");
     const verifiedOnly = verifiedOnlyParam
