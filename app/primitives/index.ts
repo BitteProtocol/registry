@@ -13,6 +13,7 @@ export enum BittePrimitiveName {
   SWAP_ON_AFTERMATH = 'aftermath-sui-swap',
   GET_SUI_BALANCES = 'get-sui-balances',
   SUI_LIQUID_STAKING = 'sui-lst',
+  DATA_RETRIEVAL = 'data-retrieval',
 }
 
 export const isBittePrimitiveName = (

@@ -24,6 +24,7 @@ export const BittePrimitiveNames = [
   "sign-message",
   "submit-query",
   "transfer-ft",
+  "data-retrieval",
 ];
 
 export const DEFAULT_MODEL = "gpt-4o";
