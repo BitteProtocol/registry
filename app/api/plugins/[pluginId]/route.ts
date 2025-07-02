@@ -530,11 +530,13 @@ const sanitizeSpec = async (
   const validatedSpec = await SwaggerParser.validate(spec);
   // remove empty objects and arrays form a spec or spec part
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const sanitize = (value: unknown): any => {
+  const sanitize = (value: unknown, currentPath: string[] = []): any => {
     if (Array.isArray(value)) {
       // Handle arrays
       const sanitizedArray = value
-        .map(sanitize)
+        .map((item, index) =>
+          sanitize(item, [...currentPath, index.toString()])
+        )
         .filter(
           (item) =>
             item !== null &&
@@ -552,20 +554,34 @@ const sanitizeSpec = async (
       // Handle objects
       const sanitizedObj: Record<string, JSONValue> = {};
       for (const [key, val] of Object.entries(value)) {
-        const sanitizedValue = sanitize(val);
+        const sanitizedValue = sanitize(val, [...currentPath, key]);
         if (sanitizedValue !== undefined && sanitizedValue !== null) {
           sanitizedObj[key] = sanitizedValue;
         }
       }
-      return Object.keys(sanitizedObj).length > 0 ? sanitizedObj : null;
+
+      // Preserve critical OpenAPI fields even when empty
+      const criticalFields = ["paths", "components", "security", "tags"];
+      const currentField = currentPath[currentPath.length - 1];
+      const isRootLevelCriticalField =
+        currentPath.length === 1 && criticalFields.includes(currentField);
+
+      return Object.keys(sanitizedObj).length > 0 || isRootLevelCriticalField
+        ? sanitizedObj
+        : null;
     }
     // Handle primitive values
-    return value === "" || value === null || value === undefined
-      ? null
-      : value;
+    return value === "" || value === null || value === undefined ? null : value;
   };
 
-  return sanitize(validatedSpec);
+  const sanitized = sanitize(validatedSpec);
+
+  // Ensure paths field is always present, even if empty
+  if (sanitized && typeof sanitized === "object" && !sanitized.paths) {
+    sanitized.paths = {};
+  }
+
+  return sanitized;
 };
 
 const transformPlugin = (id: string, spec: BitteOpenAPISpec) => {
