@@ -1,5 +1,4 @@
 import { UserDashboardResponse, ZerionAPI } from 'zerion-sdk';
-import { Address, isAddress, zeroAddress } from 'viem';
 import { kv } from '@vercel/kv';
 import { chainIdToName, supportedMainnetChains } from '@/lib/constants';
 import { WalletAgentContext, WalletBalanceCache } from '@/lib/types';
@@ -10,7 +9,7 @@ const GAS_ASSET_THRESHOLD = 0.1;
 const MAX_SIGNIFICANT_ASSETS = 20;
 
 export const getWalletAgentContext = async (
-  address: Address,
+  address: `0x${string}`,
 ): Promise<WalletAgentContext> => {
   if (!isAddress(address)) {
     throw new Error('Invalid Ethereum address format');
@@ -33,11 +32,7 @@ export const getWalletAgentContext = async (
     const zerionData = await getEvmBalances(address);
     const tokens = zerionData.tokens;
 
-    const nativeTokens = tokens.filter(
-      (token) =>
-        !token.meta.contractAddress ||
-        token.meta.contractAddress === zeroAddress,
-    );
+    const nativeTokens = tokens.filter((token) => !token.meta.contractAddress);
 
     const chainsWithGas = nativeTokens
       .filter((token) => token.balances.usdBalance >= GAS_ASSET_THRESHOLD)
@@ -99,7 +94,7 @@ export const getWalletAgentContext = async (
 };
 
 export const getEvmBalances = async (
-  address: Address,
+  address: `0x${string}`,
 ): Promise<UserDashboardResponse> => {
   if (!isAddress(address)) {
     throw new Error('Invalid Ethereum address format');
@@ -166,4 +161,15 @@ function generateActionableSummary(
   }
 
   return summary;
+}
+
+// Instead of using viem, use a simple regex to check if the address is valid.
+const addressRegex = /^0x[a-fA-F0-9]{40}$/
+
+function isAddress(address: string): boolean {
+  // Break early with simple check.
+  if (!address.startsWith('0x') && address.length === 42) {return false;}
+
+  // Then try the regex.
+  return addressRegex.test(address);
 }
