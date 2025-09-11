@@ -1,3 +1,4 @@
+// TODO: None of the exported code here is used anywhere in the project.
 import { UserDashboardResponse, ZerionAPI } from 'zerion-sdk';
 import { kv } from '@vercel/kv';
 import { chainIdToName, supportedMainnetChains } from '@/lib/constants';
