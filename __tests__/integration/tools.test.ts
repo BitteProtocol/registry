@@ -1,4 +1,3 @@
-import fetch from 'node-fetch';
 import { BASE_URL } from './agents.test';
 
 beforeEach(async () => {

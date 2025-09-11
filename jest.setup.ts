@@ -1,5 +1,4 @@
 import { jest } from '@jest/globals';
-import fetch from 'node-fetch';
 
 // Set default timeout for all tests (useful for integration tests that make real HTTP calls)
 jest.setTimeout(30000);
