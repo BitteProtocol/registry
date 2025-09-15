@@ -1,4 +1,4 @@
-import { Tool as OpenAITool, JSONValue } from "ai";
+import { Tool as OpenAITool } from "ai";
 import { FunctionTool } from "openai/resources/beta/assistants";
 import { FunctionDefinition } from "openai/resources/index";
 import { OpenAPIV3 } from "openapi-types";
@@ -69,7 +69,6 @@ export type BitteAgentBase = {
 };
 
 // // --------------------------------- Tools ---------------------------------- //
-export type BitteMetadata = Record<string, unknown>;
 
 export type BitteToolSpec = PluginToolSpec | FunctionTool;
 
@@ -87,14 +86,6 @@ export type ExecutionDefinition = {
   path: string;
   httpMethod: string;
 };
-
-export type BitteToolExecutor<
-  TArgs = Record<string, JSONValue>,
-  TResult = unknown,
-> = (
-  args: TArgs,
-  metadata?: BitteMetadata,
-) => Promise<BitteToolResult<TResult>>;
 
 export type BitteToolResult<TResult = unknown> =
   | { data: TResult; error?: never }
