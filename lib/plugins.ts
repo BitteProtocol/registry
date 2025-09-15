@@ -4,9 +4,7 @@ import { OpenAI } from 'openai';
 import { DEFAULT_MODEL } from '@/lib/constants';
 import type {
   BitteAssistantConfig,
-  BitteMetadata,
   BitteOpenAPISpec,
-  BitteToolExecutor,
   PluginToolSpec,
 } from '@/lib/types';
 import { errorString } from './error';
