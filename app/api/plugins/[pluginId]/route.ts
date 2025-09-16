@@ -192,7 +192,7 @@ export const POST = withUnkey(
         repo: assistantDefinition.repo || null,
         verified: false,
         chainIds:
-          assistantDefinition.chainIds?.map((cid) => cid.toString()) || [],
+          assistantDefinition.chainIds?.map((cid) => cid.toString().toLowerCase()) || [],
         tools: pluginTools.map((t) => t.id),
         primitives:
           assistantDefinition.tools
@@ -335,7 +335,7 @@ export const PUT = withUnkey(
           assistantDefinition.instructions || plugin.info.description || "",
         image: assistantDefinition.image || null,
         chainIds:
-          assistantDefinition.chainIds?.map((cid) => cid.toString()) || [],
+          assistantDefinition.chainIds?.map((cid) => cid.toString().toLowerCase()) || [],
         tools: pluginTools.map((t) => t.id),
         primitives:
           assistantDefinition.tools
