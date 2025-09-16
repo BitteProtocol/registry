@@ -15,6 +15,7 @@ export const COLLECTIONS = {
 export const BittePrimitiveNames = [
   "create-drop",
   "generate-evm-tx",
+  "generate-sol-tx",
   "generate-image",
   "generate-transaction",
   "getSwapTransactions",

@@ -7,6 +7,7 @@ export enum BittePrimitiveName {
   GET_TOKEN_METADATA = 'getTokenMetadata',
   GENERATE_EVM_TX = 'generate-evm-tx',
   GENERATE_SUI_TX = 'generate-sui-tx',
+  GENERATE_SOL_TX = 'generate-sol-tx',
   RENDER_CHART = 'render-chart',
   SIGN_MESSAGE = 'sign-message',
   GET_PORTFOLIO = 'get-portfolio',

@@ -63,7 +63,7 @@ export type BitteAgentBase = {
   instructions: string;
   tools?: BitteToolSpec[];
   image?: string;
-  chainIds?: number[];
+  chainIds?: string[];
   categories?: string[];
   repo?: string;
 };
