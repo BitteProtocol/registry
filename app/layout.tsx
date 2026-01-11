@@ -1,5 +1,5 @@
 import "./globals.css";
-import type React from "react";
+import type { ReactNode } from "react";
 import { Toaster } from "sonner";
 import { Inter } from "next/font/google";
 
